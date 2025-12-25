@@ -25,24 +25,32 @@ public class FamilyMigrationRunner implements CommandLineRunner {
     public void run(String... args) {
         log.info("Preparing migration menu");
 
-        displayMenu();
+        while (true) {
+            displayMenu();
 
-        String key = readKey();
+            String key = readKey();
 
-        log.info("Received migration key {}", key);
+            log.info("Received migration key {}", key);
 
-        if ("1".equals(key)) {
-            log.info("Starting family type migration with batch size {}", batchSize);
-
-            try {
-                familyMigrationService.migrateFamilyTypeInBatches(batchSize);
-            } catch (Exception ex) {
-                log.error("Family type migration failed: {}", ex.getMessage(), ex);
+            if ("0".equals(key)) {
+                log.info("Exit selected. No migration executed.");
+                return;
             }
 
-            log.info("Finished family type migration");
-        } else {
-            log.info("No migration executed for key {}", key);
+            if ("1".equals(key)) {
+                log.info("Starting family type migration with batch size {}", batchSize);
+
+                try {
+                    familyMigrationService.migrateFamilyTypeInBatches(batchSize);
+                } catch (Exception ex) {
+                    log.error("Family type migration failed: {}", ex.getMessage(), ex);
+                }
+
+                log.info("Finished family type migration");
+                return;
+            }
+
+            log.warn("Invalid migration key {}. Please select again.", key);
         }
     }
 
@@ -68,8 +76,7 @@ public class FamilyMigrationRunner implements CommandLineRunner {
 
         System.out.println("=== Migration Menu ===");
         System.out.println("1: Family (batch size " + batchSize + ")");
-        System.out.println("Other: Skip migrations");
+        System.out.println("0: Exit");
         System.out.print("Enter migration key: ");
     }
 }
-
