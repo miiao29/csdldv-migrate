@@ -25,24 +25,31 @@ public class FamilyMigrationRunner implements CommandLineRunner {
     public void run(String... args) {
         log.info("Preparing migration menu");
 
-        displayMenu();
+        while (true) {
+            displayMenu();
 
-        String key = readKey();
+            String key = readKey();
 
-        log.info("Received migration key {}", key);
+            log.info("Received migration key {}", key);
 
-        if ("1".equals(key)) {
-            log.info("Starting family type migration with batch size {}", batchSize);
+            if ("0".equals(key)) {
+                log.info("Exiting migration program");
+                System.exit(0);
+            } else if ("1".equals(key)) {
+                log.info("Starting family type migration with batch size {}", batchSize);
 
-            try {
-                familyMigrationService.migrateFamilyTypeInBatches(batchSize);
-            } catch (Exception ex) {
-                log.error("Family type migration failed: {}", ex.getMessage(), ex);
+                try {
+                    familyMigrationService.migrateFamilyTypeInBatches(batchSize);
+                } catch (Exception ex) {
+                    log.error("Family type migration failed: {}", ex.getMessage(), ex);
+                }
+
+                log.info("Finished family type migration");
+                break;
+            } else {
+                log.warn("Invalid migration key {}, please enter again", key);
+                System.out.println("Invalid option. Please enter 0 to exit or 1 to run migration.");
             }
-
-            log.info("Finished family type migration");
-        } else {
-            log.info("No migration executed for key {}", key);
         }
     }
 
@@ -67,8 +74,8 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         log.info("migration key options displayed");
 
         System.out.println("=== Migration Menu ===");
+        System.out.println("0: Exit");
         System.out.println("1: Family (batch size " + batchSize + ")");
-        System.out.println("Other: Skip migrations");
         System.out.print("Enter migration key: ");
     }
 }
