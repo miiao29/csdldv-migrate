@@ -15,14 +15,16 @@ public class FamilyMigrationRunner implements CommandLineRunner {
 
     private final FamilyMigrationService familyMigrationService;
     private final DisciplineMigrationService disciplineMigrationService;
+    private final TrainingProcessMigrationService trainingProcessMigrationService;
     private final int familyBatchSize;
     private final int familyMegaBatchSize;
     private final int disciplineBatchSize;
     private final int disciplineMegaBatchSize;
 
-    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, DisciplineMigrationService disciplineMigrationService, @Value("${migration.family.batch-size:1000}") int familyBatchSize, @Value("${migration.family.mega-batch-size:100000}") int familyMegaBatchSize, @Value("${migration.discipline.batch-size:1000}") int disciplineBatchSize, @Value("${migration.discipline.mega-batch-size:100000}") int disciplineMegaBatchSize) {
+    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, DisciplineMigrationService disciplineMigrationService, TrainingProcessMigrationService trainingProcessMigrationService, @Value("${migration.family.batch-size:1000}") int familyBatchSize, @Value("${migration.family.mega-batch-size:100000}") int familyMegaBatchSize, @Value("${migration.discipline.batch-size:1000}") int disciplineBatchSize, @Value("${migration.discipline.mega-batch-size:100000}") int disciplineMegaBatchSize) {
         this.familyMigrationService = familyMigrationService;
         this.disciplineMigrationService = disciplineMigrationService;
+        this.trainingProcessMigrationService = trainingProcessMigrationService;
         this.familyBatchSize = familyBatchSize;
         this.familyMegaBatchSize = familyMegaBatchSize;
         this.disciplineBatchSize = disciplineBatchSize;
@@ -47,9 +49,11 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 handleFamilyMigration();
             } else if ("2".equals(key)) {
                 handleDisciplineMigration();
+            } else if ("3.2".equals(key)) {
+                handleTrainingProcessMigration();
             } else {
                 log.warn("Invalid migration key {}, please enter again", key);
-                System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, or 2 for PARTY_MEMBER_DISCIPLINE migration.");
+                System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, 2 for PARTY_MEMBER_DISCIPLINE migration, or 3.1 for PARTY_MEMBER_TRAINING_PROCESS migration.");
             }
         }
     }
@@ -116,6 +120,37 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         }
     }
 
+    private void handleTrainingProcessMigration() {
+        while (true) {
+            displaySubMenu("PARTY_MEMBER_TRAINING_PROCESS Migration");
+
+            String subKey = readKey();
+
+            log.info("Received sub-menu key {} for PARTY_MEMBER_TRAINING_PROCESS migration", subKey);
+
+            if ("0".equals(subKey)) {
+                log.info("Returning to main menu");
+                break;
+            } else if ("1".equals(subKey)) {
+                log.info("Displaying SQL for PARTY_MEMBER_TRAINING_PROCESS migration");
+                trainingProcessMigrationService.displaySql();
+            } else if ("2".equals(subKey)) {
+                log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Delete invalid or duplicate records");
+
+                try {
+                    trainingProcessMigrationService.deleteInvalidAndDuplicateRecords();
+                    log.info("PARTY_MEMBER_TRAINING_PROCESS migration completed successfully");
+                } catch (Exception ex) {
+                    log.error("PARTY_MEMBER_TRAINING_PROCESS migration failed: {}", ex.getMessage(), ex);
+                    System.exit(1);
+                }
+            } else {
+                log.warn("Invalid sub-menu key {}, please enter again", subKey);
+                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
+            }
+        }
+    }
+
     @SuppressWarnings("resource")
     private String readKey() {
         Console console = System.console();
@@ -140,6 +175,7 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         System.out.println("0: Exit");
         System.out.println("1: Family Migration (batch size " + familyBatchSize + ")");
         System.out.println("2: PARTY_MEMBER_DISCIPLINE Migration (batch size " + disciplineBatchSize + ")");
+        System.out.println("3.2: PARTY_MEMBER_TRAINING_PROCESS Migration (Delete invalid or duplicate records)");
         System.out.print("Enter option: ");
     }
 
@@ -148,7 +184,7 @@ public class FamilyMigrationRunner implements CommandLineRunner {
 
         System.out.println("=== " + functionName + " ===");
         System.out.println("0: Return to main menu");
-        System.out.println("1: View SQL (SELECT and UPDATE)");
+        System.out.println("1: View SQL (DELETE + UPDATE + SELECT)");
         System.out.println("2: Execute migration");
         System.out.print("Enter option: ");
     }
