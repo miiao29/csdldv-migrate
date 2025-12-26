@@ -21,12 +21,18 @@ public class FamilyMigrationService {
     }
 
     public void displaySql() {
-        String selectSql = getSelectSql();
+        String selectSql20 = getSelectSqlFrom20();
+        String selectSql25 = getSelectSqlFrom25();
+        String selectSql26 = getSelectSqlFrom26();
         String updateTypeOneSql = getUpdateTypeOneSql();
         String updateTypeZeroSql = getUpdateTypeZeroSql();
 
-        System.out.println("\n=== SQL SELECT ===");
-        System.out.println(selectSql);
+        System.out.println("\n=== SQL SELECT from CSDLDV_20 ===");
+        System.out.println(selectSql20);
+        System.out.println("\n=== SQL SELECT from CSDLDV_25 ===");
+        System.out.println(selectSql25);
+        System.out.println("\n=== SQL SELECT from CSDLDV_26 ===");
+        System.out.println(selectSql26);
         System.out.println("\n=== SQL UPDATE (Set TYPE = 1) ===");
         System.out.println(updateTypeOneSql);
         System.out.println("\n=== SQL UPDATE (Set TYPE = 0) ===");
@@ -34,7 +40,7 @@ public class FamilyMigrationService {
         System.out.println();
     }
 
-    private String getSelectSql() {
+    private String getSelectSqlFrom20() {
         return """
                 SELECT a.PARTY_MEMBER_FAMILY_ID
                 FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY a
@@ -48,24 +54,42 @@ public class FamilyMigrationService {
                             'E2','E3','M2','M3','R1','R2'
                         )
                   )
-                   OR EXISTS (
-                       SELECT 1
-                       FROM CSDLDV_25.qhe_gd b
-                       WHERE b.guidkey = a.V3_QUANHE_GD_GUID
-                         AND b.MA_TV_GD IN (
-                             'A2','A3','B5','B6','C7','C8',
-                             'E2','E3','M2','M3','R1','R2'
-                         )
-                   )
-                   OR EXISTS (
-                       SELECT 1
-                       FROM CSDLDV_26.qhe_gd b
-                       WHERE b.guidkey = a.V3_QUANHE_GD_GUID
-                         AND b.MA_TV_GD IN (
-                             'A2','A3','B5','B6','C7','C8',
-                             'E2','E3','M2','M3','R1','R2'
-                         )
-                   )
+                ORDER BY a.PARTY_MEMBER_FAMILY_ID
+                """;
+    }
+
+    private String getSelectSqlFrom25() {
+        return """
+                SELECT a.PARTY_MEMBER_FAMILY_ID
+                FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY a
+                WHERE a.TYPE IS NULL
+                  AND EXISTS (
+                      SELECT 1
+                      FROM CSDLDV_25.qhe_gd b
+                      WHERE b.guidkey = a.V3_QUANHE_GD_GUID
+                        AND b.MA_TV_GD IN (
+                            'A2','A3','B5','B6','C7','C8',
+                            'E2','E3','M2','M3','R1','R2'
+                        )
+                  )
+                ORDER BY a.PARTY_MEMBER_FAMILY_ID
+                """;
+    }
+
+    private String getSelectSqlFrom26() {
+        return """
+                SELECT a.PARTY_MEMBER_FAMILY_ID
+                FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY a
+                WHERE a.TYPE IS NULL
+                  AND EXISTS (
+                      SELECT 1
+                      FROM CSDLDV_26.qhe_gd b
+                      WHERE b.guidkey = a.V3_QUANHE_GD_GUID
+                        AND b.MA_TV_GD IN (
+                            'A2','A3','B5','B6','C7','C8',
+                            'E2','E3','M2','M3','R1','R2'
+                        )
+                  )
                 ORDER BY a.PARTY_MEMBER_FAMILY_ID
                 """;
     }
@@ -89,11 +113,23 @@ public class FamilyMigrationService {
     public void migrateFamilyTypeInBatches(int batchSize, int megaBatchSize) {
         log.info("Starting family type migration with batch size {}", batchSize);
 
-        String selectSql = getSelectSql();
-        log.info("SQL SELECT to find IDs:\n{}", selectSql);
+        log.info("Starting find IDs from CSDLDV_20");
+        List<String> ids20 = partyMemberFamilyRepository.findAllIdsForTypeOneFrom20();
+        log.info("Found {} records from CSDLDV_20 to update", ids20.size());
 
-        List<String> allIds = partyMemberFamilyRepository.findAllIdsForTypeOne();
-        log.info("Found {} total records to update", allIds.size());
+        log.info("Starting find IDs from CSDLDV_25");
+        List<String> ids25 = partyMemberFamilyRepository.findAllIdsForTypeOneFrom25();
+        log.info("Found {} records from CSDLDV_25 to update", ids25.size());
+
+        log.info("Starting find IDs from CSDLDV_26");
+        List<String> ids26 = partyMemberFamilyRepository.findAllIdsForTypeOneFrom26();
+        log.info("Found {} records from CSDLDV_26 to update", ids26.size());
+
+        List<String> allIds = new java.util.ArrayList<>();
+        allIds.addAll(ids20);
+        allIds.addAll(ids25);
+        allIds.addAll(ids26);
+        log.info("Found {} total records to update ({} from CSDLDV_20, {} from CSDLDV_25, {} from CSDLDV_26)", allIds.size(), ids20.size(), ids25.size(), ids26.size());
 
         int totalBatches = (int) Math.ceil((double) allIds.size() / batchSize);
         int totalMegaBatches = (int) Math.ceil((double) allIds.size() / megaBatchSize);
