@@ -44,23 +44,21 @@ public class FamilyMigrationRunner implements CommandLineRunner {
 
                 try {
                     familyMigrationService.migrateFamilyTypeInBatches(familyBatchSize);
+                    log.info("Family type migration completed successfully");
                 } catch (Exception ex) {
                     log.error("Family type migration failed: {}", ex.getMessage(), ex);
+                    System.exit(1);
                 }
-
-                log.info("Finished family type migration");
-                break;
             } else if ("2".equals(key)) {
                 log.info("Starting PARTY_MEMBER_DISCIPLINE migration with batch size {}", disciplineBatchSize);
 
                 try {
                     disciplineMigrationService.updateDisciplineFormAndReasonInBatches(disciplineBatchSize);
+                    log.info("PARTY_MEMBER_DISCIPLINE migration completed successfully");
                 } catch (Exception ex) {
                     log.error("PARTY_MEMBER_DISCIPLINE migration failed: {}", ex.getMessage(), ex);
+                    System.exit(1);
                 }
-
-                log.info("Finished PARTY_MEMBER_DISCIPLINE migration");
-                break;
             } else {
                 log.warn("Invalid migration key {}, please enter again", key);
                 System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, or 2 for PARTY_MEMBER_DISCIPLINE migration.");

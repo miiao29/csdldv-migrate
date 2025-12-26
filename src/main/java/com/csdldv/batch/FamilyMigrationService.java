@@ -102,7 +102,9 @@ public class FamilyMigrationService {
             log.info("Executing SQL UPDATE to set TYPE = 0 for remaining records");
             Integer setZero = transactionTemplate.execute(status -> partyMemberFamilyRepository.bulkSetTypeZero());
 
+            log.info("=============================================");
             log.info("Finished family type migration, set type=1 {}, set type=0 {}", totalUpdated, setZero);
+            log.info("=============================================");
         } catch (Exception ex) {
             log.error("Family type migration encountered error: {}", ex.getMessage(), ex);
 

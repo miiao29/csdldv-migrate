@@ -115,7 +115,9 @@ public class DisciplineMigrationService {
                 log.info("Batch updated {} rows, total updated {}", updated, totalUpdated);
             }
 
+            log.info("=============================================");
             log.info("Finished PARTY_MEMBER_DISCIPLINE migration, total updated {} rows", totalUpdated);
+            log.info("=============================================");
         } catch (Exception ex) {
             log.error("PARTY_MEMBER_DISCIPLINE migration encountered error: {}", ex.getMessage(), ex);
 
