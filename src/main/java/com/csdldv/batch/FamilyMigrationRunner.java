@@ -14,11 +14,15 @@ public class FamilyMigrationRunner implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(FamilyMigrationRunner.class);
 
     private final FamilyMigrationService familyMigrationService;
-    private final int batchSize;
+    private final DisciplineMigrationService disciplineMigrationService;
+    private final int familyBatchSize;
+    private final int disciplineBatchSize;
 
-    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, @Value("${migration.family.batch-size:1000}") int batchSize) {
+    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, DisciplineMigrationService disciplineMigrationService, @Value("${migration.family.batch-size:1000}") int familyBatchSize, @Value("${migration.discipline.batch-size:1000}") int disciplineBatchSize) {
         this.familyMigrationService = familyMigrationService;
-        this.batchSize = batchSize;
+        this.disciplineMigrationService = disciplineMigrationService;
+        this.familyBatchSize = familyBatchSize;
+        this.disciplineBatchSize = disciplineBatchSize;
     }
 
     @Override
@@ -36,19 +40,30 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 log.info("Exiting migration program");
                 System.exit(0);
             } else if ("1".equals(key)) {
-                log.info("Starting family type migration with batch size {}", batchSize);
+                log.info("Starting family type migration with batch size {}", familyBatchSize);
 
                 try {
-                    familyMigrationService.migrateFamilyTypeInBatches(batchSize);
+                    familyMigrationService.migrateFamilyTypeInBatches(familyBatchSize);
                 } catch (Exception ex) {
                     log.error("Family type migration failed: {}", ex.getMessage(), ex);
                 }
 
                 log.info("Finished family type migration");
                 break;
+            } else if ("2".equals(key)) {
+                log.info("Starting PARTY_MEMBER_DISCIPLINE migration with batch size {}", disciplineBatchSize);
+
+                try {
+                    disciplineMigrationService.updateDisciplineFormAndReasonInBatches(disciplineBatchSize);
+                } catch (Exception ex) {
+                    log.error("PARTY_MEMBER_DISCIPLINE migration failed: {}", ex.getMessage(), ex);
+                }
+
+                log.info("Finished PARTY_MEMBER_DISCIPLINE migration");
+                break;
             } else {
                 log.warn("Invalid migration key {}, please enter again", key);
-                System.out.println("Invalid option. Please enter 0 to exit or 1 to run migration.");
+                System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, or 2 for PARTY_MEMBER_DISCIPLINE migration.");
             }
         }
     }
@@ -75,7 +90,8 @@ public class FamilyMigrationRunner implements CommandLineRunner {
 
         System.out.println("=== Migration Menu ===");
         System.out.println("0: Exit");
-        System.out.println("1: Family (batch size " + batchSize + ")");
+        System.out.println("1: Family (batch size " + familyBatchSize + ")");
+        System.out.println("2: Update PARTY_MEMBER_DISCIPLINE (MA_KL, LYDO) (batch size " + disciplineBatchSize + ")");
         System.out.print("Enter migration key: ");
     }
 }
