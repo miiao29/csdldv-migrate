@@ -16,13 +16,17 @@ public class FamilyMigrationRunner implements CommandLineRunner {
     private final FamilyMigrationService familyMigrationService;
     private final DisciplineMigrationService disciplineMigrationService;
     private final int familyBatchSize;
+    private final int familyMegaBatchSize;
     private final int disciplineBatchSize;
+    private final int disciplineMegaBatchSize;
 
-    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, DisciplineMigrationService disciplineMigrationService, @Value("${migration.family.batch-size:1000}") int familyBatchSize, @Value("${migration.discipline.batch-size:1000}") int disciplineBatchSize) {
+    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, DisciplineMigrationService disciplineMigrationService, @Value("${migration.family.batch-size:1000}") int familyBatchSize, @Value("${migration.family.mega-batch-size:100000}") int familyMegaBatchSize, @Value("${migration.discipline.batch-size:1000}") int disciplineBatchSize, @Value("${migration.discipline.mega-batch-size:100000}") int disciplineMegaBatchSize) {
         this.familyMigrationService = familyMigrationService;
         this.disciplineMigrationService = disciplineMigrationService;
         this.familyBatchSize = familyBatchSize;
+        this.familyMegaBatchSize = familyMegaBatchSize;
         this.disciplineBatchSize = disciplineBatchSize;
+        this.disciplineMegaBatchSize = disciplineMegaBatchSize;
     }
 
     @Override
@@ -40,20 +44,20 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 log.info("Exiting migration program");
                 System.exit(0);
             } else if ("1".equals(key)) {
-                log.info("Starting family type migration with batch size {}", familyBatchSize);
+                log.info("Starting family type migration with batch size {}, mega-batch size {}", familyBatchSize, familyMegaBatchSize);
 
                 try {
-                    familyMigrationService.migrateFamilyTypeInBatches(familyBatchSize);
+                    familyMigrationService.migrateFamilyTypeInBatches(familyBatchSize, familyMegaBatchSize);
                     log.info("Family type migration completed successfully");
                 } catch (Exception ex) {
                     log.error("Family type migration failed: {}", ex.getMessage(), ex);
                     System.exit(1);
                 }
             } else if ("2".equals(key)) {
-                log.info("Starting PARTY_MEMBER_DISCIPLINE migration with batch size {}", disciplineBatchSize);
+                log.info("Starting PARTY_MEMBER_DISCIPLINE migration with batch size {}, mega-batch size {}", disciplineBatchSize, disciplineMegaBatchSize);
 
                 try {
-                    disciplineMigrationService.updateDisciplineFormAndReasonInBatches(disciplineBatchSize);
+                    disciplineMigrationService.updateDisciplineFormAndReasonInBatches(disciplineBatchSize, disciplineMegaBatchSize);
                     log.info("PARTY_MEMBER_DISCIPLINE migration completed successfully");
                 } catch (Exception ex) {
                     log.error("PARTY_MEMBER_DISCIPLINE migration failed: {}", ex.getMessage(), ex);

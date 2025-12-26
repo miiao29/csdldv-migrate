@@ -20,7 +20,7 @@ public class FamilyMigrationService {
         this.transactionTemplate = transactionTemplate;
     }
 
-    public void migrateFamilyTypeInBatches(int batchSize) {
+    public void migrateFamilyTypeInBatches(int batchSize, int megaBatchSize) {
         log.info("Starting family type migration with batch size {}", batchSize);
 
         String selectSql = """
@@ -61,6 +61,10 @@ public class FamilyMigrationService {
         List<String> allIds = partyMemberFamilyRepository.findAllIdsForTypeOne();
         log.info("Found {} total records to update", allIds.size());
 
+        int totalBatches = (int) Math.ceil((double) allIds.size() / batchSize);
+        int totalMegaBatches = (int) Math.ceil((double) allIds.size() / megaBatchSize);
+        log.info("Will execute {} UPDATE statements in {} mega-batches ({} records per mega-batch), {} COMMITs total", totalBatches, totalMegaBatches, megaBatchSize, totalMegaBatches);
+
         String updateTypeOneSqlTemplate = """
                 UPDATE CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY
                 SET TYPE = 1
@@ -69,25 +73,48 @@ public class FamilyMigrationService {
         log.info("SQL UPDATE template to set TYPE = 1:\n{}", updateTypeOneSqlTemplate);
 
         long totalUpdated = 0;
+        int committedMegaBatches = 0;
 
         try {
-            for (int i = 0; i < allIds.size(); i += batchSize) {
-                int endIndex = Math.min(i + batchSize, allIds.size());
-                List<String> batchIds = allIds.subList(i, endIndex);
+            for (int megaStart = 0; megaStart < allIds.size(); megaStart += megaBatchSize) {
+                final int currentMegaStart = megaStart;
+                int megaEnd = Math.min(currentMegaStart + megaBatchSize, allIds.size());
+                int megaBatchNumber = (currentMegaStart / megaBatchSize) + 1;
 
-                Integer updated = transactionTemplate.execute(status -> {
-                    return partyMemberFamilyRepository.bulkSetTypeOne(batchIds);
+                log.info("Processing mega-batch {}/{} (records {} to {})", megaBatchNumber, totalMegaBatches, currentMegaStart + 1, megaEnd);
+
+                Integer[] result = transactionTemplate.execute(status -> {
+                    long megaUpdated = 0;
+
+                    for (int i = currentMegaStart; i < megaEnd; i += batchSize) {
+                        int endIndex = Math.min(i + batchSize, megaEnd);
+                        List<String> batchIds = allIds.subList(i, endIndex);
+
+                        Integer updated = partyMemberFamilyRepository.bulkSetTypeOne(batchIds);
+                        megaUpdated += updated;
+                    }
+
+                    return new Integer[]{(int) megaUpdated};
                 });
 
-                totalUpdated += updated;
+                if (result == null || result[0] == null) {
+                    log.error("Mega-batch {}/{} transaction returned null, rolling back this mega-batch", megaBatchNumber, totalMegaBatches);
+                    throw new RuntimeException("Mega-batch " + megaBatchNumber + " failed, rolled back");
+                }
+
+                totalUpdated += result[0];
+                committedMegaBatches++;
+                log.info("Mega-batch {}/{} committed successfully ({} records updated, total: {})", megaBatchNumber, totalMegaBatches, result[0], totalUpdated);
             }
+
             Integer setZero = transactionTemplate.execute(status -> partyMemberFamilyRepository.bulkSetTypeZero());
 
             log.info("=============================================");
             log.info("Finished family type migration, set type=1 {}, set type=0 {}", totalUpdated, setZero);
+            log.info("Total {} mega-batches committed successfully ({} COMMITs)", committedMegaBatches, committedMegaBatches);
             log.info("=============================================");
         } catch (Exception ex) {
-            log.error("Family type migration encountered error: {}", ex.getMessage(), ex);
+            log.error("Family type migration encountered error at mega-batch {}/{}, last {} mega-batches rolled back: {}", committedMegaBatches + 1, totalMegaBatches, committedMegaBatches, ex.getMessage(), ex);
 
             throw ex;
         }

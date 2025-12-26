@@ -20,7 +20,7 @@ public class DisciplineMigrationService {
         this.transactionTemplate = transactionTemplate;
     }
 
-    public void updateDisciplineFormAndReasonInBatches(int batchSize) {
+    public void updateDisciplineFormAndReasonInBatches(int batchSize, int megaBatchSize) {
         log.info("Starting PARTY_MEMBER_DISCIPLINE migration (MA_KL, LYDO) with batch size {}", batchSize);
 
         String selectSql = """
@@ -57,25 +57,51 @@ public class DisciplineMigrationService {
         List<String> allIds = partyMemberDisciplineRepository.findAllIdsForUpdate();
         log.info("Found {} total records to update", allIds.size());
 
+        int totalBatches = (int) Math.ceil((double) allIds.size() / batchSize);
+        int totalMegaBatches = (int) Math.ceil((double) allIds.size() / megaBatchSize);
+        log.info("Will execute {} UPDATE statements in {} mega-batches ({} records per mega-batch), {} COMMITs total", totalBatches, totalMegaBatches, megaBatchSize, totalMegaBatches);
+
         long totalUpdated = 0;
+        int committedMegaBatches = 0;
 
         try {
-            for (int i = 0; i < allIds.size(); i += batchSize) {
-                int endIndex = Math.min(i + batchSize, allIds.size());
-                List<String> batchIds = allIds.subList(i, endIndex);
+            for (int megaStart = 0; megaStart < allIds.size(); megaStart += megaBatchSize) {
+                final int currentMegaStart = megaStart;
+                int megaEnd = Math.min(currentMegaStart + megaBatchSize, allIds.size());
+                int megaBatchNumber = (currentMegaStart / megaBatchSize) + 1;
 
-                Integer updated = transactionTemplate.execute(status -> {
-                    return partyMemberDisciplineRepository.bulkUpdateDisciplineFormAndReason(batchIds);
+                log.info("Processing mega-batch {}/{} (records {} to {})", megaBatchNumber, totalMegaBatches, currentMegaStart + 1, megaEnd);
+
+                Integer megaUpdated = transactionTemplate.execute(status -> {
+                    long updated = 0;
+
+                    for (int i = currentMegaStart; i < megaEnd; i += batchSize) {
+                        int endIndex = Math.min(i + batchSize, megaEnd);
+                        List<String> batchIds = allIds.subList(i, endIndex);
+
+                        Integer batchUpdated = partyMemberDisciplineRepository.bulkUpdateDisciplineFormAndReason(batchIds);
+                        updated += batchUpdated;
+                    }
+
+                    return (int) updated;
                 });
 
-                totalUpdated += updated;
+                if (megaUpdated == null) {
+                    log.error("Mega-batch {}/{} transaction returned null, rolling back this mega-batch", megaBatchNumber, totalMegaBatches);
+                    throw new RuntimeException("Mega-batch " + megaBatchNumber + " failed, rolled back");
+                }
+
+                totalUpdated += megaUpdated;
+                committedMegaBatches++;
+                log.info("Mega-batch {}/{} committed successfully ({} records updated, total: {})", megaBatchNumber, totalMegaBatches, megaUpdated, totalUpdated);
             }
 
             log.info("=============================================");
             log.info("Finished PARTY_MEMBER_DISCIPLINE migration, total updated {} rows", totalUpdated);
+            log.info("Total {} mega-batches committed successfully ({} COMMITs)", committedMegaBatches, committedMegaBatches);
             log.info("=============================================");
         } catch (Exception ex) {
-            log.error("PARTY_MEMBER_DISCIPLINE migration encountered error: {}", ex.getMessage(), ex);
+            log.error("PARTY_MEMBER_DISCIPLINE migration encountered error at mega-batch {}/{}, last {} mega-batches rolled back: {}", committedMegaBatches + 1, totalMegaBatches, committedMegaBatches, ex.getMessage(), ex);
 
             throw ex;
         }
