@@ -68,36 +68,19 @@ public class FamilyMigrationService {
                 """;
         log.info("SQL UPDATE template to set TYPE = 1:\n{}", updateTypeOneSqlTemplate);
 
-        String updateTypeZeroSql = """
-                UPDATE CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY
-                SET TYPE = 0
-                WHERE TYPE IS NULL
-                """;
-        log.info("SQL UPDATE to set TYPE = 0:\n{}", updateTypeZeroSql);
-
         long totalUpdated = 0;
 
         try {
             for (int i = 0; i < allIds.size(); i += batchSize) {
-                final int startIndex = i;
                 int endIndex = Math.min(i + batchSize, allIds.size());
                 List<String> batchIds = allIds.subList(i, endIndex);
 
-                String idsPlaceholder = String.join("','", batchIds);
-                String updateTypeOneSql = updateTypeOneSqlTemplate.replace(":ids", "'" + idsPlaceholder + "'");
-                log.info("SQL UPDATE to set TYPE = 1 for batch {} to {}:\n{}", startIndex + 1, endIndex, updateTypeOneSql);
-
                 Integer updated = transactionTemplate.execute(status -> {
-                    log.info("Updating batch {} to {} of {}", startIndex + 1, endIndex, allIds.size());
                     return partyMemberFamilyRepository.bulkSetTypeOne(batchIds);
                 });
 
                 totalUpdated += updated;
-
-                log.info("Batch updated {} rows, total updated {}", updated, totalUpdated);
             }
-
-            log.info("Executing SQL UPDATE to set TYPE = 0 for remaining records");
             Integer setZero = transactionTemplate.execute(status -> partyMemberFamilyRepository.bulkSetTypeZero());
 
             log.info("=============================================");
