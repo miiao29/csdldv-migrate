@@ -20,10 +20,22 @@ public class FamilyMigrationService {
         this.transactionTemplate = transactionTemplate;
     }
 
-    public void migrateFamilyTypeInBatches(int batchSize, int megaBatchSize) {
-        log.info("Starting family type migration with batch size {}", batchSize);
+    public void displaySql() {
+        String selectSql = getSelectSql();
+        String updateTypeOneSql = getUpdateTypeOneSql();
+        String updateTypeZeroSql = getUpdateTypeZeroSql();
 
-        String selectSql = """
+        System.out.println("\n=== SQL SELECT ===");
+        System.out.println(selectSql);
+        System.out.println("\n=== SQL UPDATE (Set TYPE = 1) ===");
+        System.out.println(updateTypeOneSql);
+        System.out.println("\n=== SQL UPDATE (Set TYPE = 0) ===");
+        System.out.println(updateTypeZeroSql);
+        System.out.println();
+    }
+
+    private String getSelectSql() {
+        return """
                 SELECT a.PARTY_MEMBER_FAMILY_ID
                 FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY a
                 WHERE a.TYPE IS NULL
@@ -56,6 +68,28 @@ public class FamilyMigrationService {
                    )
                 ORDER BY a.PARTY_MEMBER_FAMILY_ID
                 """;
+    }
+
+    private String getUpdateTypeOneSql() {
+        return """
+                UPDATE CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY
+                SET TYPE = 1
+                WHERE PARTY_MEMBER_FAMILY_ID IN (:ids)
+                """;
+    }
+
+    private String getUpdateTypeZeroSql() {
+        return """
+                UPDATE CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY
+                SET TYPE = 0
+                WHERE TYPE IS NULL
+                """;
+    }
+
+    public void migrateFamilyTypeInBatches(int batchSize, int megaBatchSize) {
+        log.info("Starting family type migration with batch size {}", batchSize);
+
+        String selectSql = getSelectSql();
         log.info("SQL SELECT to find IDs:\n{}", selectSql);
 
         List<String> allIds = partyMemberFamilyRepository.findAllIdsForTypeOne();
@@ -65,11 +99,7 @@ public class FamilyMigrationService {
         int totalMegaBatches = (int) Math.ceil((double) allIds.size() / megaBatchSize);
         log.info("Will execute {} UPDATE statements in {} mega-batches ({} records per mega-batch), {} COMMITs total", totalBatches, totalMegaBatches, megaBatchSize, totalMegaBatches);
 
-        String updateTypeOneSqlTemplate = """
-                UPDATE CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY
-                SET TYPE = 1
-                WHERE PARTY_MEMBER_FAMILY_ID IN (:ids)
-                """;
+        String updateTypeOneSqlTemplate = getUpdateTypeOneSql();
         log.info("SQL UPDATE template to set TYPE = 1:\n{}", updateTypeOneSqlTemplate);
 
         long totalUpdated = 0;

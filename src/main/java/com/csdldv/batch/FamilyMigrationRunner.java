@@ -34,7 +34,7 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         log.info("Preparing migration menu");
 
         while (true) {
-            displayMenu();
+            displayMainMenu();
 
             String key = readKey();
 
@@ -44,6 +44,31 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 log.info("Exiting migration program");
                 System.exit(0);
             } else if ("1".equals(key)) {
+                handleFamilyMigration();
+            } else if ("2".equals(key)) {
+                handleDisciplineMigration();
+            } else {
+                log.warn("Invalid migration key {}, please enter again", key);
+                System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, or 2 for PARTY_MEMBER_DISCIPLINE migration.");
+            }
+        }
+    }
+
+    private void handleFamilyMigration() {
+        while (true) {
+            displaySubMenu("Family Migration");
+
+            String subKey = readKey();
+
+            log.info("Received sub-menu key {} for Family migration", subKey);
+
+            if ("0".equals(subKey)) {
+                log.info("Returning to main menu");
+                break;
+            } else if ("1".equals(subKey)) {
+                log.info("Displaying SQL for Family migration");
+                familyMigrationService.displaySql();
+            } else if ("2".equals(subKey)) {
                 log.info("Starting family type migration with batch size {}, mega-batch size {}", familyBatchSize, familyMegaBatchSize);
 
                 try {
@@ -53,7 +78,28 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                     log.error("Family type migration failed: {}", ex.getMessage(), ex);
                     System.exit(1);
                 }
-            } else if ("2".equals(key)) {
+            } else {
+                log.warn("Invalid sub-menu key {}, please enter again", subKey);
+                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
+            }
+        }
+    }
+
+    private void handleDisciplineMigration() {
+        while (true) {
+            displaySubMenu("PARTY_MEMBER_DISCIPLINE Migration");
+
+            String subKey = readKey();
+
+            log.info("Received sub-menu key {} for PARTY_MEMBER_DISCIPLINE migration", subKey);
+
+            if ("0".equals(subKey)) {
+                log.info("Returning to main menu");
+                break;
+            } else if ("1".equals(subKey)) {
+                log.info("Displaying SQL for PARTY_MEMBER_DISCIPLINE migration");
+                disciplineMigrationService.displaySql();
+            } else if ("2".equals(subKey)) {
                 log.info("Starting PARTY_MEMBER_DISCIPLINE migration with batch size {}, mega-batch size {}", disciplineBatchSize, disciplineMegaBatchSize);
 
                 try {
@@ -64,8 +110,8 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                     System.exit(1);
                 }
             } else {
-                log.warn("Invalid migration key {}, please enter again", key);
-                System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, or 2 for PARTY_MEMBER_DISCIPLINE migration.");
+                log.warn("Invalid sub-menu key {}, please enter again", subKey);
+                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
             }
         }
     }
@@ -87,14 +133,24 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         return line.trim();
     }
 
-    private void displayMenu() {
-        log.info("migration key options displayed");
+    private void displayMainMenu() {
+        log.info("Main migration menu displayed");
 
-        System.out.println("=== Migration Menu ===");
+        System.out.println("=== Main Migration Menu ===");
         System.out.println("0: Exit");
-        System.out.println("1: Family (batch size " + familyBatchSize + ")");
-        System.out.println("2: Update PARTY_MEMBER_DISCIPLINE (MA_KL, LYDO) (batch size " + disciplineBatchSize + ")");
-        System.out.print("Enter migration key: ");
+        System.out.println("1: Family Migration (batch size " + familyBatchSize + ")");
+        System.out.println("2: PARTY_MEMBER_DISCIPLINE Migration (batch size " + disciplineBatchSize + ")");
+        System.out.print("Enter option: ");
+    }
+
+    private void displaySubMenu(String functionName) {
+        log.info("Sub-menu displayed for {}", functionName);
+
+        System.out.println("=== " + functionName + " ===");
+        System.out.println("0: Return to main menu");
+        System.out.println("1: View SQL (SELECT and UPDATE)");
+        System.out.println("2: Execute migration");
+        System.out.print("Enter option: ");
     }
 }
 

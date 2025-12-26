@@ -20,10 +20,19 @@ public class DisciplineMigrationService {
         this.transactionTemplate = transactionTemplate;
     }
 
-    public void updateDisciplineFormAndReasonInBatches(int batchSize, int megaBatchSize) {
-        log.info("Starting PARTY_MEMBER_DISCIPLINE migration (MA_KL, LYDO) with batch size {}", batchSize);
+    public void displaySql() {
+        String selectSql = getSelectSql();
+        String updateSql = getUpdateSql();
 
-        String selectSql = """
+        System.out.println("\n=== SQL SELECT ===");
+        System.out.println(selectSql);
+        System.out.println("\n=== SQL UPDATE ===");
+        System.out.println(updateSql);
+        System.out.println();
+    }
+
+    private String getSelectSql() {
+        return """
                 SELECT x.PARTY_MEMBER_DISCIPLINE_ID
                 FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_DISCIPLINE x
                 WHERE EXISTS (
@@ -52,6 +61,49 @@ public class DisciplineMigrationService {
                 )
                 ORDER BY x.PARTY_MEMBER_DISCIPLINE_ID
                 """;
+    }
+
+    private String getUpdateSql() {
+        return """
+                UPDATE CSDLDV_PARTY_MEMBER.PARTY_MEMBER_DISCIPLINE x
+                SET (x.DISCIPLINE_FORM_ID, x.DISCIPLINE_REASON) =
+                (
+                    SELECT s.CATEGORY_ID, s.LYDO
+                    FROM (
+                        SELECT c.CATEGORY_ID,
+                               kl.GUIDKEY,
+                               kl.LYDO
+                        FROM CSDLDV_CATEGORY.CATEGORY c
+                        JOIN CSDLDV_20.KT_KL kl
+                          ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
+                        WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
+                        UNION ALL
+                        SELECT c.CATEGORY_ID,
+                               kl.GUIDKEY,
+                               kl.LYDO
+                        FROM CSDLDV_CATEGORY.CATEGORY c
+                        JOIN CSDLDV_25.KT_KL kl
+                          ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
+                        WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
+                        UNION ALL
+                        SELECT c.CATEGORY_ID,
+                               kl.GUIDKEY,
+                               kl.LYDO
+                        FROM CSDLDV_CATEGORY.CATEGORY c
+                        JOIN CSDLDV_26.KT_KL kl
+                          ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
+                        WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
+                    ) s
+                    WHERE s.GUIDKEY = x.V3_KT_KL_GUID
+                )
+                WHERE x.PARTY_MEMBER_DISCIPLINE_ID IN (:ids)
+                """;
+    }
+
+    public void updateDisciplineFormAndReasonInBatches(int batchSize, int megaBatchSize) {
+        log.info("Starting PARTY_MEMBER_DISCIPLINE migration (MA_KL, LYDO) with batch size {}", batchSize);
+
+        String selectSql = getSelectSql();
         log.info("SQL SELECT to find IDs:\n{}", selectSql);
 
         List<String> allIds = partyMemberDisciplineRepository.findAllIdsForUpdate();
