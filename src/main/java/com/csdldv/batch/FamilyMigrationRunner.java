@@ -88,6 +88,8 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 try {
                     familyMigrationService.migrateFamilyTypeInBatches(familyBatchSize, familyMegaBatchSize);
                     log.info("Family type migration completed successfully");
+                    log.info("Returning to main menu");
+                    break;
                 } catch (Exception ex) {
                     log.error("Family type migration failed: {}", ex.getMessage(), ex);
                     System.exit(1);
@@ -119,6 +121,8 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 try {
                     disciplineMigrationService.updateDisciplineFormAndReasonInBatches(disciplineBatchSize, disciplineMegaBatchSize);
                     log.info("PARTY_MEMBER_DISCIPLINE migration completed successfully");
+                    log.info("Returning to main menu");
+                    break;
                 } catch (Exception ex) {
                     log.error("PARTY_MEMBER_DISCIPLINE migration failed: {}", ex.getMessage(), ex);
                     System.exit(1);
@@ -150,6 +154,8 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 try {
                     trainingProcessMigrationService.insertMaLLCTRecords(trainingProcess31BatchSize, trainingProcess31MegaBatchSize);
                     log.info("PARTY_MEMBER_TRAINING_PROCESS migration 3.1 completed successfully");
+                    log.info("Returning to main menu");
+                    break;
                 } catch (Exception ex) {
                     log.error("PARTY_MEMBER_TRAINING_PROCESS migration 3.1 failed: {}", ex.getMessage(), ex);
                     System.exit(1);
@@ -181,6 +187,8 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 try {
                     trainingProcessMigrationService.deleteInvalidAndDuplicateRecords(trainingProcess32BatchSize, trainingProcess32MegaBatchSize);
                     log.info("PARTY_MEMBER_TRAINING_PROCESS migration 3.2 completed successfully");
+                    log.info("Returning to main menu");
+                    break;
                 } catch (Exception ex) {
                     log.error("PARTY_MEMBER_TRAINING_PROCESS migration 3.2 failed: {}", ex.getMessage(), ex);
                     System.exit(1);
