@@ -12,42 +12,39 @@ import java.util.List;
 public interface PartyMemberFamilyRepository extends JpaRepository<PartyMemberFamily, String> {
 
     @Query(value = """
-            SELECT id FROM (
-                SELECT a.PARTY_MEMBER_FAMILY_ID id
-                FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY a
-                WHERE a.TYPE IS NULL
-                  AND EXISTS (
-                      SELECT 1
-                      FROM CSDLDV_20.qhe_gd b
-                      WHERE b.guidkey = a.V3_QUANHE_GD_GUID
-                        AND b.MA_TV_GD IN (
-                            'A2','A3','B5','B6','C7','C8',
-                            'E2','E3','M2','M3','R1','R2'
-                        )
-                  )
-                   OR EXISTS (
-                       SELECT 1
-                       FROM CSDLDV_25.qhe_gd b
-                       WHERE b.guidkey = a.V3_QUANHE_GD_GUID
-                         AND b.MA_TV_GD IN (
-                             'A2','A3','B5','B6','C7','C8',
-                             'E2','E3','M2','M3','R1','R2'
-                         )
-                   )
-                   OR EXISTS (
-                       SELECT 1
-                       FROM CSDLDV_26.qhe_gd b
-                       WHERE b.guidkey = a.V3_QUANHE_GD_GUID
-                         AND b.MA_TV_GD IN (
-                             'A2','A3','B5','B6','C7','C8',
-                             'E2','E3','M2','M3','R1','R2'
-                         )
-                   )
-                ORDER BY a.PARTY_MEMBER_FAMILY_ID
-            )
-            WHERE ROWNUM <= :batchSize
+            SELECT a.PARTY_MEMBER_FAMILY_ID
+            FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY a
+            WHERE a.TYPE IS NULL
+              AND EXISTS (
+                  SELECT 1
+                  FROM CSDLDV_20.qhe_gd b
+                  WHERE b.guidkey = a.V3_QUANHE_GD_GUID
+                    AND b.MA_TV_GD IN (
+                        'A2','A3','B5','B6','C7','C8',
+                        'E2','E3','M2','M3','R1','R2'
+                    )
+              )
+               OR EXISTS (
+                   SELECT 1
+                   FROM CSDLDV_25.qhe_gd b
+                   WHERE b.guidkey = a.V3_QUANHE_GD_GUID
+                     AND b.MA_TV_GD IN (
+                         'A2','A3','B5','B6','C7','C8',
+                         'E2','E3','M2','M3','R1','R2'
+                     )
+               )
+               OR EXISTS (
+                   SELECT 1
+                   FROM CSDLDV_26.qhe_gd b
+                   WHERE b.guidkey = a.V3_QUANHE_GD_GUID
+                     AND b.MA_TV_GD IN (
+                         'A2','A3','B5','B6','C7','C8',
+                         'E2','E3','M2','M3','R1','R2'
+                     )
+               )
+            ORDER BY a.PARTY_MEMBER_FAMILY_ID
             """, nativeQuery = true)
-    List<String> findIdsForTypeOne(int batchSize);
+    List<String> findAllIdsForTypeOne();
 
     @Modifying
     @Query(value = """

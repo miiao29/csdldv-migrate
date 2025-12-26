@@ -23,43 +23,43 @@ public class FamilyMigrationService {
     public void migrateFamilyTypeInBatches(int batchSize) {
         log.info("Starting family type migration with batch size {}", batchSize);
 
-        String selectSql = String.format("""
-                SELECT id FROM (
-                    SELECT a.PARTY_MEMBER_FAMILY_ID id
-                    FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY a
-                    WHERE a.TYPE IS NULL
-                      AND EXISTS (
-                          SELECT 1
-                          FROM CSDLDV_20.qhe_gd b
-                          WHERE b.guidkey = a.V3_QUANHE_GD_GUID
-                            AND b.MA_TV_GD IN (
-                                'A2','A3','B5','B6','C7','C8',
-                                'E2','E3','M2','M3','R1','R2'
-                            )
-                      )
-                       OR EXISTS (
-                           SELECT 1
-                           FROM CSDLDV_25.qhe_gd b
-                           WHERE b.guidkey = a.V3_QUANHE_GD_GUID
-                             AND b.MA_TV_GD IN (
-                                 'A2','A3','B5','B6','C7','C8',
-                                 'E2','E3','M2','M3','R1','R2'
-                             )
-                       )
-                       OR EXISTS (
-                           SELECT 1
-                           FROM CSDLDV_26.qhe_gd b
-                           WHERE b.guidkey = a.V3_QUANHE_GD_GUID
-                             AND b.MA_TV_GD IN (
-                                 'A2','A3','B5','B6','C7','C8',
-                                 'E2','E3','M2','M3','R1','R2'
-                             )
-                       )
-                    ORDER BY a.PARTY_MEMBER_FAMILY_ID
-                )
-                WHERE ROWNUM <= %d
-                """, batchSize);
-        log.info("SQL SELECT to find IDs (batch size {}):\n{}", batchSize, selectSql);
+        String selectSql = """
+                SELECT a.PARTY_MEMBER_FAMILY_ID
+                FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY a
+                WHERE a.TYPE IS NULL
+                  AND EXISTS (
+                      SELECT 1
+                      FROM CSDLDV_20.qhe_gd b
+                      WHERE b.guidkey = a.V3_QUANHE_GD_GUID
+                        AND b.MA_TV_GD IN (
+                            'A2','A3','B5','B6','C7','C8',
+                            'E2','E3','M2','M3','R1','R2'
+                        )
+                  )
+                   OR EXISTS (
+                       SELECT 1
+                       FROM CSDLDV_25.qhe_gd b
+                       WHERE b.guidkey = a.V3_QUANHE_GD_GUID
+                         AND b.MA_TV_GD IN (
+                             'A2','A3','B5','B6','C7','C8',
+                             'E2','E3','M2','M3','R1','R2'
+                         )
+                   )
+                   OR EXISTS (
+                       SELECT 1
+                       FROM CSDLDV_26.qhe_gd b
+                       WHERE b.guidkey = a.V3_QUANHE_GD_GUID
+                         AND b.MA_TV_GD IN (
+                             'A2','A3','B5','B6','C7','C8',
+                             'E2','E3','M2','M3','R1','R2'
+                         )
+                   )
+                ORDER BY a.PARTY_MEMBER_FAMILY_ID
+                """;
+        log.info("SQL SELECT to find IDs:\n{}", selectSql);
+
+        List<String> allIds = partyMemberFamilyRepository.findAllIdsForTypeOne();
+        log.info("Found {} total records to update", allIds.size());
 
         String updateTypeOneSqlTemplate = """
                 UPDATE CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY
@@ -78,20 +78,18 @@ public class FamilyMigrationService {
         long totalUpdated = 0;
 
         try {
-            while (true) {
-                List<String> ids = partyMemberFamilyRepository.findIdsForTypeOne(batchSize);
+            for (int i = 0; i < allIds.size(); i += batchSize) {
+                final int startIndex = i;
+                int endIndex = Math.min(i + batchSize, allIds.size());
+                List<String> batchIds = allIds.subList(i, endIndex);
 
-                if (ids.isEmpty()) {
-                    break;
-                }
-
-                String idsPlaceholder = String.join("','", ids);
+                String idsPlaceholder = String.join("','", batchIds);
                 String updateTypeOneSql = updateTypeOneSqlTemplate.replace(":ids", "'" + idsPlaceholder + "'");
-                log.info("SQL UPDATE to set TYPE = 1 for batch:\n{}", updateTypeOneSql);
+                log.info("SQL UPDATE to set TYPE = 1 for batch {} to {}:\n{}", startIndex + 1, endIndex, updateTypeOneSql);
 
                 Integer updated = transactionTemplate.execute(status -> {
-                    log.info("Updating batch with {} IDs", ids.size());
-                    return partyMemberFamilyRepository.bulkSetTypeOne(ids);
+                    log.info("Updating batch {} to {} of {}", startIndex + 1, endIndex, allIds.size());
+                    return partyMemberFamilyRepository.bulkSetTypeOne(batchIds);
                 });
 
                 totalUpdated += updated;
