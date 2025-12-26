@@ -298,21 +298,21 @@ public class FamilyMigrationRunner implements CommandLineRunner {
     private void displayMainMenu() {
         log.info("Main migration menu displayed");
 
-        System.out.println("=== Main Migration Menu ===");
-        System.out.println("0: Exit");
-        System.out.println("1: Family Migration (batch size " + familyBatchSize + ")");
-        System.out.println("2: PARTY_MEMBER_DISCIPLINE Migration (batch size " + disciplineBatchSize + ")");
+        System.out.println("=== Main Migration Menu ===\n");
+        System.out.println("0: Exit\n");
+        System.out.println("1: Family Migration (batch size " + familyBatchSize + ")\n");
+        System.out.println("2: PARTY_MEMBER_DISCIPLINE Migration (batch size " + disciplineBatchSize + ")\n");
         System.out.println("3: PARTY_MEMBER_TRAINING_PROCESS Migration (Delete invalid or duplicate records) (batch size " + trainingProcess32BatchSize + ")");
         System.out.println("4: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_LLCT) (batch size " + trainingProcess31BatchSize + ")");
         System.out.println("5: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_BANGDT) (batch size " + trainingProcess33BatchSize + ")");
-        System.out.println("6: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_BANGNN) (batch size " + trainingProcess34BatchSize + ")");
+        System.out.println("6: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_BANGNN) (batch size " + trainingProcess34BatchSize + ")\n");
         System.out.print("Enter option: ");
     }
 
     private void displaySubMenu(String functionName) {
         log.info("Sub-menu displayed for {}", functionName);
 
-        System.out.println("=== " + functionName + " ===");
+        System.out.println("\n\n\n\n\n\n\n\n=== " + functionName + " ===");
         System.out.println("0: Return to main menu");
         System.out.println("1: View SQL (DELETE + UPDATE + SELECT)");
         System.out.println("2: Execute migration");
