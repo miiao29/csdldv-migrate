@@ -26,8 +26,10 @@ public class FamilyMigrationRunner implements CommandLineRunner {
     private final int trainingProcess32MegaBatchSize;
     private final int trainingProcess33BatchSize;
     private final int trainingProcess33MegaBatchSize;
+    private final int trainingProcess34BatchSize;
+    private final int trainingProcess34MegaBatchSize;
 
-    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, DisciplineMigrationService disciplineMigrationService, TrainingProcessMigrationService trainingProcessMigrationService, @Value("${migration.family.batch-size:1000}") int familyBatchSize, @Value("${migration.family.mega-batch-size:100000}") int familyMegaBatchSize, @Value("${migration.discipline.batch-size:1000}") int disciplineBatchSize, @Value("${migration.discipline.mega-batch-size:100000}") int disciplineMegaBatchSize, @Value("${migration.training-process-31.batch-size:1000}") int trainingProcess31BatchSize, @Value("${migration.training-process-31.mega-batch-size:100000}") int trainingProcess31MegaBatchSize, @Value("${migration.training-process-32.batch-size:1000}") int trainingProcess32BatchSize, @Value("${migration.training-process-32.mega-batch-size:100000}") int trainingProcess32MegaBatchSize, @Value("${migration.training-process-33.batch-size:1000}") int trainingProcess33BatchSize, @Value("${migration.training-process-33.mega-batch-size:100000}") int trainingProcess33MegaBatchSize) {
+    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, DisciplineMigrationService disciplineMigrationService, TrainingProcessMigrationService trainingProcessMigrationService, @Value("${migration.family.batch-size:1000}") int familyBatchSize, @Value("${migration.family.mega-batch-size:100000}") int familyMegaBatchSize, @Value("${migration.discipline.batch-size:1000}") int disciplineBatchSize, @Value("${migration.discipline.mega-batch-size:100000}") int disciplineMegaBatchSize, @Value("${migration.training-process-31.batch-size:1000}") int trainingProcess31BatchSize, @Value("${migration.training-process-31.mega-batch-size:100000}") int trainingProcess31MegaBatchSize, @Value("${migration.training-process-32.batch-size:1000}") int trainingProcess32BatchSize, @Value("${migration.training-process-32.mega-batch-size:100000}") int trainingProcess32MegaBatchSize, @Value("${migration.training-process-33.batch-size:1000}") int trainingProcess33BatchSize, @Value("${migration.training-process-33.mega-batch-size:100000}") int trainingProcess33MegaBatchSize, @Value("${migration.training-process-34.batch-size:1000}") int trainingProcess34BatchSize, @Value("${migration.training-process-34.mega-batch-size:100000}") int trainingProcess34MegaBatchSize) {
         this.familyMigrationService = familyMigrationService;
         this.disciplineMigrationService = disciplineMigrationService;
         this.trainingProcessMigrationService = trainingProcessMigrationService;
@@ -41,6 +43,8 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         this.trainingProcess32MegaBatchSize = trainingProcess32MegaBatchSize;
         this.trainingProcess33BatchSize = trainingProcess33BatchSize;
         this.trainingProcess33MegaBatchSize = trainingProcess33MegaBatchSize;
+        this.trainingProcess34BatchSize = trainingProcess34BatchSize;
+        this.trainingProcess34MegaBatchSize = trainingProcess34MegaBatchSize;
     }
 
     @Override
@@ -67,9 +71,11 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 handleTrainingProcessMigration32();
             } else if ("5".equals(key)) {
                 handleTrainingProcessMigration33();
+            } else if ("6".equals(key)) {
+                handleTrainingProcessMigration34();
             } else {
                 log.warn("Invalid migration key {}, please enter again", key);
-                System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, 2 for PARTY_MEMBER_DISCIPLINE migration, 3 for PARTY_MEMBER_TRAINING_PROCESS migration (Delete invalid or duplicate records), 4 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_LLCT), or 5 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_BANGDT).");
+                System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, 2 for PARTY_MEMBER_DISCIPLINE migration, 3 for PARTY_MEMBER_TRAINING_PROCESS migration (Delete invalid or duplicate records), 4 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_LLCT), 5 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_BANGDT), or 6 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_BANGNN).");
             }
         }
     }
@@ -239,6 +245,39 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         }
     }
 
+    private void handleTrainingProcessMigration34() {
+        while (true) {
+            displaySubMenu("PARTY_MEMBER_TRAINING_PROCESS Migration - Chức năng 3.4 (Insert MA_BANGNN)");
+
+            String subKey = readKey();
+
+            log.info("Received sub-menu key {} for PARTY_MEMBER_TRAINING_PROCESS migration 3.4", subKey);
+
+            if ("0".equals(subKey)) {
+                log.info("Returning to main menu");
+                break;
+            } else if ("1".equals(subKey)) {
+                log.info("Displaying SQL for PARTY_MEMBER_TRAINING_PROCESS migration 3.4");
+                trainingProcessMigrationService.displaySqlFor34();
+            } else if ("2".equals(subKey)) {
+                log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration 3.4 - Insert MA_BANGNN records with batch size {}, mega-batch size {}", trainingProcess34BatchSize, trainingProcess34MegaBatchSize);
+
+                try {
+                    trainingProcessMigrationService.insertMaBANGNNRecords(trainingProcess34BatchSize, trainingProcess34MegaBatchSize);
+                    log.info("PARTY_MEMBER_TRAINING_PROCESS migration 3.4 completed successfully");
+                    log.info("Returning to main menu");
+                    break;
+                } catch (Exception ex) {
+                    log.error("PARTY_MEMBER_TRAINING_PROCESS migration 3.4 failed: {}", ex.getMessage(), ex);
+                    System.exit(1);
+                }
+            } else {
+                log.warn("Invalid sub-menu key {}, please enter again", subKey);
+                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
+            }
+        }
+    }
+
     @SuppressWarnings("resource")
     private String readKey() {
         Console console = System.console();
@@ -266,6 +305,7 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         System.out.println("3: PARTY_MEMBER_TRAINING_PROCESS Migration (Delete invalid or duplicate records) (batch size " + trainingProcess32BatchSize + ")");
         System.out.println("4: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_LLCT) (batch size " + trainingProcess31BatchSize + ")");
         System.out.println("5: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_BANGDT) (batch size " + trainingProcess33BatchSize + ")");
+        System.out.println("6: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_BANGNN) (batch size " + trainingProcess34BatchSize + ")");
         System.out.print("Enter option: ");
     }
 

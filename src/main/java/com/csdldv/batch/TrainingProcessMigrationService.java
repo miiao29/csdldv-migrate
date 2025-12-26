@@ -643,5 +643,280 @@ public class TrainingProcessMigrationService {
         log.info("Total records inserted: {}", inserted20 + inserted25 + inserted26);
         log.info("=============================================");
     }
+
+    public void displaySqlFor34() {
+        String insertSql20 = getInsertMaBANGNNSqlFrom20();
+        String insertSql25 = getInsertMaBANGNNSqlFrom25();
+        String insertSql26 = getInsertMaBANGNNSqlFrom26();
+
+        System.out.println("\n=== SQL INSERT MA_BANGNN Records from CSDLDV_20 ===");
+        System.out.println(insertSql20);
+        System.out.println("\n=== SQL INSERT MA_BANGNN Records from CSDLDV_25 ===");
+        System.out.println(insertSql25);
+        System.out.println("\n=== SQL INSERT MA_BANGNN Records from CSDLDV_26 ===");
+        System.out.println(insertSql26);
+        System.out.println();
+    }
+
+    private String getInsertMaBANGNNSqlFrom20() {
+        return """
+                INSERT INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS
+                (PARTY_MEMBER_TRAINING_ID,
+                 PARTY_MEMBER_ID,
+                 IS_ACTIVE,
+                 V3_QUATRINH_DAOTAO_GUID,
+                 FROM_DATE,
+                 TO_DATE,
+                 TRAINING_COUNTRY_ID,
+                 TRAINING_MODE_ID,
+                 NOTE,
+                 TRAINING_LEVEL_ID,
+                 TRAINING_TYPE_ID)
+                SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+                       (SELECT p.PARTY_MEMBER_ID
+                        FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
+                        WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
+                          AND ROWNUM = 1) AS PARTY_MEMBER_ID,
+                       1                  AS IS_ACTIVE,
+                       dt.GUIDKEY,
+                       CSDLDV_PARTY_MEMBER.STR_2_DDMMYYYY(dt.NHAPHOC),
+                       CSDLDV_PARTY_MEMBER.STR_2_DDMMYYYY(dt.T_NGHIEP),
+                       (SELECT c.CATEGORY_ID
+                        FROM CSDLDV_CATEGORY.CATEGORY c
+                        WHERE c.CATEGORY_GROUP_CODE = 'QUOCGIA'
+                          AND c.CATEGORY_CODE = dt.MA_NUOC
+                          AND ROWNUM = 1) AS TRAINING_COUNTRY_ID,
+                       (SELECT c.CATEGORY_ID
+                        FROM CSDLDV_CATEGORY.CATEGORY c
+                        WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCDAOTAO'
+                          AND c.CATEGORY_CODE = dt.MA_HTDTAO
+                          AND ROWNUM = 1) AS TRAINING_MODE_ID,
+                       dt.GHICHU,
+                       c1.CATEGORY_ID     AS TRAINING_LEVEL_ID,
+                       (SELECT c2.CATEGORY_ID
+                        FROM CSDLDV_CATEGORY.CATEGORY c2
+                        WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
+                          AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
+                          AND c2.TCTK_CODE <> '0'
+                          AND ROWNUM = 1) AS TRAINING_TYPE_ID
+                FROM CSDLDV_20.QTRINH_DT dt
+                         JOIN CSDLDV_20.ORGN_NGU o
+                              ON dt.MA_BANGNN = o.MA_BANGNN
+                         JOIN CSDLDV_CATEGORY.CATEGORY c1
+                              ON c1.CATEGORY_NAME = o.TEN_BANGNN
+                WHERE o.SYNCCODE <> 3
+                  AND c1.CATEGORY_GROUP_CODE = 'TRINHDODAOTAO'
+                  AND c1.TCTK_CODE LIKE 'NN%'
+                  AND NOT EXISTS (
+                      SELECT 1
+                      FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS tp
+                      WHERE tp.V3_QUATRINH_DAOTAO_GUID = dt.GUIDKEY
+                        AND tp.TRAINING_TYPE_ID = (
+                            SELECT c2.CATEGORY_ID
+                            FROM CSDLDV_CATEGORY.CATEGORY c2
+                            WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
+                              AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
+                              AND c2.TCTK_CODE <> '0'
+                              AND ROWNUM = 1
+                        )
+                        AND tp.TRAINING_LEVEL_ID = c1.CATEGORY_ID
+                  )
+                """;
+    }
+
+    private String getInsertMaBANGNNSqlFrom25() {
+        return """
+                INSERT INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS
+                (PARTY_MEMBER_TRAINING_ID,
+                 PARTY_MEMBER_ID,
+                 IS_ACTIVE,
+                 V3_QUATRINH_DAOTAO_GUID,
+                 FROM_DATE,
+                 TO_DATE,
+                 TRAINING_COUNTRY_ID,
+                 TRAINING_MODE_ID,
+                 NOTE,
+                 TRAINING_LEVEL_ID,
+                 TRAINING_TYPE_ID)
+                SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+                       (SELECT p.PARTY_MEMBER_ID
+                        FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
+                        WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
+                          AND ROWNUM = 1) AS PARTY_MEMBER_ID,
+                       1                  AS IS_ACTIVE,
+                       dt.GUIDKEY,
+                       CSDLDV_PARTY_MEMBER.STR_2_DDMMYYYY(dt.NHAPHOC),
+                       CSDLDV_PARTY_MEMBER.STR_2_DDMMYYYY(dt.T_NGHIEP),
+                       (SELECT c.CATEGORY_ID
+                        FROM CSDLDV_CATEGORY.CATEGORY c
+                        WHERE c.CATEGORY_GROUP_CODE = 'QUOCGIA'
+                          AND c.CATEGORY_CODE = dt.MA_NUOC
+                          AND ROWNUM = 1) AS TRAINING_COUNTRY_ID,
+                       (SELECT c.CATEGORY_ID
+                        FROM CSDLDV_CATEGORY.CATEGORY c
+                        WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCDAOTAO'
+                          AND c.CATEGORY_CODE = dt.MA_HTDTAO
+                          AND ROWNUM = 1) AS TRAINING_MODE_ID,
+                       dt.GHICHU,
+                       c1.CATEGORY_ID     AS TRAINING_LEVEL_ID,
+                       (SELECT c2.CATEGORY_ID
+                        FROM CSDLDV_CATEGORY.CATEGORY c2
+                        WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
+                          AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
+                          AND c2.TCTK_CODE <> '0'
+                          AND ROWNUM = 1) AS TRAINING_TYPE_ID
+                FROM CSDLDV_25.QTRINH_DT dt
+                         JOIN CSDLDV_25.ORGN_NGU o
+                              ON dt.MA_BANGNN = o.MA_BANGNN
+                         JOIN CSDLDV_CATEGORY.CATEGORY c1
+                              ON c1.CATEGORY_NAME = o.TEN_BANGNN
+                WHERE o.SYNCCODE <> 3
+                  AND c1.CATEGORY_GROUP_CODE = 'TRINHDODAOTAO'
+                  AND c1.TCTK_CODE LIKE 'NN%'
+                  AND NOT EXISTS (
+                      SELECT 1
+                      FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS tp
+                      WHERE tp.V3_QUATRINH_DAOTAO_GUID = dt.GUIDKEY
+                        AND tp.TRAINING_TYPE_ID = (
+                            SELECT c2.CATEGORY_ID
+                            FROM CSDLDV_CATEGORY.CATEGORY c2
+                            WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
+                              AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
+                              AND c2.TCTK_CODE <> '0'
+                              AND ROWNUM = 1
+                        )
+                        AND tp.TRAINING_LEVEL_ID = c1.CATEGORY_ID
+                  )
+                """;
+    }
+
+    private String getInsertMaBANGNNSqlFrom26() {
+        return """
+                INSERT INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS
+                (PARTY_MEMBER_TRAINING_ID,
+                 PARTY_MEMBER_ID,
+                 IS_ACTIVE,
+                 V3_QUATRINH_DAOTAO_GUID,
+                 FROM_DATE,
+                 TO_DATE,
+                 TRAINING_COUNTRY_ID,
+                 TRAINING_MODE_ID,
+                 NOTE,
+                 TRAINING_LEVEL_ID,
+                 TRAINING_TYPE_ID)
+                SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+                       (SELECT p.PARTY_MEMBER_ID
+                        FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
+                        WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
+                          AND ROWNUM = 1) AS PARTY_MEMBER_ID,
+                       1                  AS IS_ACTIVE,
+                       dt.GUIDKEY,
+                       CSDLDV_PARTY_MEMBER.STR_2_DDMMYYYY(dt.NHAPHOC),
+                       CSDLDV_PARTY_MEMBER.STR_2_DDMMYYYY(dt.T_NGHIEP),
+                       (SELECT c.CATEGORY_ID
+                        FROM CSDLDV_CATEGORY.CATEGORY c
+                        WHERE c.CATEGORY_GROUP_CODE = 'QUOCGIA'
+                          AND c.CATEGORY_CODE = dt.MA_NUOC
+                          AND ROWNUM = 1) AS TRAINING_COUNTRY_ID,
+                       (SELECT c.CATEGORY_ID
+                        FROM CSDLDV_CATEGORY.CATEGORY c
+                        WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCDAOTAO'
+                          AND c.CATEGORY_CODE = dt.MA_HTDTAO
+                          AND ROWNUM = 1) AS TRAINING_MODE_ID,
+                       dt.GHICHU,
+                       c1.CATEGORY_ID     AS TRAINING_LEVEL_ID,
+                       (SELECT c2.CATEGORY_ID
+                        FROM CSDLDV_CATEGORY.CATEGORY c2
+                        WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
+                          AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
+                          AND c2.TCTK_CODE <> '0'
+                          AND ROWNUM = 1) AS TRAINING_TYPE_ID
+                FROM CSDLDV_26.QTRINH_DT dt
+                         JOIN CSDLDV_26.ORGN_NGU o
+                              ON dt.MA_BANGNN = o.MA_BANGNN
+                         JOIN CSDLDV_CATEGORY.CATEGORY c1
+                              ON c1.CATEGORY_NAME = o.TEN_BANGNN
+                WHERE o.SYNCCODE <> 3
+                  AND c1.CATEGORY_GROUP_CODE = 'TRINHDODAOTAO'
+                  AND c1.TCTK_CODE LIKE 'NN%'
+                  AND NOT EXISTS (
+                      SELECT 1
+                      FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS tp
+                      WHERE tp.V3_QUATRINH_DAOTAO_GUID = dt.GUIDKEY
+                        AND tp.TRAINING_TYPE_ID = (
+                            SELECT c2.CATEGORY_ID
+                            FROM CSDLDV_CATEGORY.CATEGORY c2
+                            WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
+                              AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
+                              AND c2.TCTK_CODE <> '0'
+                              AND ROWNUM = 1
+                        )
+                        AND tp.TRAINING_LEVEL_ID = c1.CATEGORY_ID
+                  )
+                """;
+    }
+
+    public void insertMaBANGNNRecords(int batchSize, int megaBatchSize) {
+        log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Chức năng 3.4: Insert MA_BANGNN records with batch size {}, mega-batch size {}", batchSize, megaBatchSize);
+
+        Integer inserted20 = transactionTemplate.execute(status -> {
+            try {
+                log.info("Starting insert MA_BANGNN records from CSDLDV_20");
+                int count = partyMemberTrainingProcessRepository.insertMaBANGNNRecordsFrom20();
+                log.info("Inserted {} MA_BANGNN records from CSDLDV_20 into PARTY_MEMBER_TRAINING_PROCESS", count);
+                return count;
+            } catch (Exception ex) {
+                log.error("Error inserting MA_BANGNN records from CSDLDV_20 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
+                throw ex;
+            }
+        });
+
+        if (inserted20 == null) {
+            log.error("Insert MA_BANGNN records from CSDLDV_20 transaction returned null, rolling back");
+            throw new RuntimeException("Insert MA_BANGNN records from CSDLDV_20 failed, rolled back");
+        }
+
+        Integer inserted25 = transactionTemplate.execute(status -> {
+            try {
+                log.info("Starting insert MA_BANGNN records from CSDLDV_25");
+                int count = partyMemberTrainingProcessRepository.insertMaBANGNNRecordsFrom25();
+                log.info("Inserted {} MA_BANGNN records from CSDLDV_25 into PARTY_MEMBER_TRAINING_PROCESS", count);
+                return count;
+            } catch (Exception ex) {
+                log.error("Error inserting MA_BANGNN records from CSDLDV_25 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
+                throw ex;
+            }
+        });
+
+        if (inserted25 == null) {
+            log.error("Insert MA_BANGNN records from CSDLDV_25 transaction returned null, rolling back");
+            throw new RuntimeException("Insert MA_BANGNN records from CSDLDV_25 failed, rolled back");
+        }
+
+        Integer inserted26 = transactionTemplate.execute(status -> {
+            try {
+                log.info("Starting insert MA_BANGNN records from CSDLDV_26");
+                int count = partyMemberTrainingProcessRepository.insertMaBANGNNRecordsFrom26();
+                log.info("Inserted {} MA_BANGNN records from CSDLDV_26 into PARTY_MEMBER_TRAINING_PROCESS", count);
+                return count;
+            } catch (Exception ex) {
+                log.error("Error inserting MA_BANGNN records from CSDLDV_26 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
+                throw ex;
+            }
+        });
+
+        if (inserted26 == null) {
+            log.error("Insert MA_BANGNN records from CSDLDV_26 transaction returned null, rolling back");
+            throw new RuntimeException("Insert MA_BANGNN records from CSDLDV_26 failed, rolled back");
+        }
+
+        log.info("=============================================");
+        log.info("Finished PARTY_MEMBER_TRAINING_PROCESS migration - Chức năng 3.4");
+        log.info("Total records inserted from CSDLDV_20: {}", inserted20);
+        log.info("Total records inserted from CSDLDV_25: {}", inserted25);
+        log.info("Total records inserted from CSDLDV_26: {}", inserted26);
+        log.info("Total records inserted: {}", inserted20 + inserted25 + inserted26);
+        log.info("=============================================");
+    }
 }
 
