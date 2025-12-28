@@ -22,24 +22,12 @@ public class DisciplineMigrationService {
 
     public void displaySql() {
         String selectSql20 = getSelectSqlFrom20();
-        String selectSql25 = getSelectSqlFrom25();
-        String selectSql26 = getSelectSqlFrom26();
         String updateSql20 = getUpdateSqlFrom20();
-        String updateSql25 = getUpdateSqlFrom25();
-        String updateSql26 = getUpdateSqlFrom26();
 
         System.out.println("\n=== SQL SELECT from CSDLDV_20 ===");
         System.out.println(selectSql20);
-        System.out.println("\n=== SQL SELECT from CSDLDV_25 ===");
-        System.out.println(selectSql25);
-        System.out.println("\n=== SQL SELECT from CSDLDV_26 ===");
-        System.out.println(selectSql26);
         System.out.println("\n=== SQL UPDATE from CSDLDV_20 ===");
         System.out.println(updateSql20);
-        System.out.println("\n=== SQL UPDATE from CSDLDV_25 ===");
-        System.out.println(updateSql25);
-        System.out.println("\n=== SQL UPDATE from CSDLDV_26 ===");
-        System.out.println(updateSql26);
         System.out.println();
     }
 
@@ -59,37 +47,6 @@ public class DisciplineMigrationService {
                 """;
     }
 
-    private String getSelectSqlFrom25() {
-        return """
-                SELECT x.PARTY_MEMBER_DISCIPLINE_ID
-                FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_DISCIPLINE x
-                WHERE EXISTS (
-                    SELECT 1
-                    FROM CSDLDV_25.KT_KL kl
-                    JOIN CSDLDV_CATEGORY.CATEGORY c
-                      ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
-                    WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
-                      AND kl.GUIDKEY = x.V3_KT_KL_GUID
-                )
-                ORDER BY x.PARTY_MEMBER_DISCIPLINE_ID
-                """;
-    }
-
-    private String getSelectSqlFrom26() {
-        return """
-                SELECT x.PARTY_MEMBER_DISCIPLINE_ID
-                FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_DISCIPLINE x
-                WHERE EXISTS (
-                    SELECT 1
-                    FROM CSDLDV_26.KT_KL kl
-                    JOIN CSDLDV_CATEGORY.CATEGORY c
-                      ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
-                    WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
-                      AND kl.GUIDKEY = x.V3_KT_KL_GUID
-                )
-                ORDER BY x.PARTY_MEMBER_DISCIPLINE_ID
-                """;
-    }
 
     private String getUpdateSqlFrom20() {
         return """
@@ -107,37 +64,6 @@ public class DisciplineMigrationService {
                 """;
     }
 
-    private String getUpdateSqlFrom25() {
-        return """
-                UPDATE CSDLDV_PARTY_MEMBER.PARTY_MEMBER_DISCIPLINE x
-                SET (x.DISCIPLINE_FORM_ID, x.DISCIPLINE_REASON) =
-                (
-                    SELECT c.CATEGORY_ID, kl.LYDO
-                    FROM CSDLDV_CATEGORY.CATEGORY c
-                    JOIN CSDLDV_25.KT_KL kl
-                      ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
-                    WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
-                      AND kl.GUIDKEY = x.V3_KT_KL_GUID
-                )
-                WHERE x.PARTY_MEMBER_DISCIPLINE_ID IN (:ids)
-                """;
-    }
-
-    private String getUpdateSqlFrom26() {
-        return """
-                UPDATE CSDLDV_PARTY_MEMBER.PARTY_MEMBER_DISCIPLINE x
-                SET (x.DISCIPLINE_FORM_ID, x.DISCIPLINE_REASON) =
-                (
-                    SELECT c.CATEGORY_ID, kl.LYDO
-                    FROM CSDLDV_CATEGORY.CATEGORY c
-                    JOIN CSDLDV_26.KT_KL kl
-                      ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
-                    WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
-                      AND kl.GUIDKEY = x.V3_KT_KL_GUID
-                )
-                WHERE x.PARTY_MEMBER_DISCIPLINE_ID IN (:ids)
-                """;
-    }
 
     public void updateDisciplineFormAndReasonInBatches(int batchSize, int megaBatchSize) {
         log.info("Starting PARTY_MEMBER_DISCIPLINE migration (MA_KL, LYDO) with batch size {}", batchSize);

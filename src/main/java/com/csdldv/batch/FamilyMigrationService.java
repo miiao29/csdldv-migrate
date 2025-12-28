@@ -22,17 +22,11 @@ public class FamilyMigrationService {
 
     public void displaySql() {
         String selectSql20 = getSelectSqlFrom20();
-        String selectSql25 = getSelectSqlFrom25();
-        String selectSql26 = getSelectSqlFrom26();
         String updateTypeOneSql = getUpdateTypeOneSql();
         String updateTypeZeroSql = getUpdateTypeZeroSql();
 
         System.out.println("\n=== SQL SELECT from CSDLDV_20 ===");
         System.out.println(selectSql20);
-        System.out.println("\n=== SQL SELECT from CSDLDV_25 ===");
-        System.out.println(selectSql25);
-        System.out.println("\n=== SQL SELECT from CSDLDV_26 ===");
-        System.out.println(selectSql26);
         System.out.println("\n=== SQL UPDATE (Set TYPE = 1) ===");
         System.out.println(updateTypeOneSql);
         System.out.println("\n=== SQL UPDATE (Set TYPE = 0) ===");
@@ -58,41 +52,6 @@ public class FamilyMigrationService {
                 """;
     }
 
-    private String getSelectSqlFrom25() {
-        return """
-                SELECT a.PARTY_MEMBER_FAMILY_ID
-                FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY a
-                WHERE a.TYPE IS NULL
-                  AND EXISTS (
-                      SELECT 1
-                      FROM CSDLDV_25.qhe_gd b
-                      WHERE b.guidkey = a.V3_QUANHE_GD_GUID
-                        AND b.MA_TV_GD IN (
-                            'A2','A3','B5','B6','C7','C8',
-                            'E2','E3','M2','M3','R1','R2'
-                        )
-                  )
-                ORDER BY a.PARTY_MEMBER_FAMILY_ID
-                """;
-    }
-
-    private String getSelectSqlFrom26() {
-        return """
-                SELECT a.PARTY_MEMBER_FAMILY_ID
-                FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FAMILY a
-                WHERE a.TYPE IS NULL
-                  AND EXISTS (
-                      SELECT 1
-                      FROM CSDLDV_26.qhe_gd b
-                      WHERE b.guidkey = a.V3_QUANHE_GD_GUID
-                        AND b.MA_TV_GD IN (
-                            'A2','A3','B5','B6','C7','C8',
-                            'E2','E3','M2','M3','R1','R2'
-                        )
-                  )
-                ORDER BY a.PARTY_MEMBER_FAMILY_ID
-                """;
-    }
 
     private String getUpdateTypeOneSql() {
         return """
