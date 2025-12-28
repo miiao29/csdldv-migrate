@@ -41,7 +41,7 @@ public class FamilyMigrationService {
                 WHERE a.TYPE IS NULL
                   AND EXISTS (
                       SELECT 1
-                      FROM CSDLDV_20.qhe_gd b
+                      FROM CSDLDV_PARTY_MEMBER.qhe_gd b
                       WHERE b.guidkey = a.V3_QUANHE_GD_GUID
                         AND b.MA_TV_GD IN (
                             'A2','A3','B5','B6','C7','C8',

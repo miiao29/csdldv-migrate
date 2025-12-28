@@ -121,398 +121,146 @@ public class FamilyMigrationRunner implements CommandLineRunner {
     }
 
     private void handleFamilyMigration() {
-        while (true) {
-            displaySubMenu("Family Migration");
+        log.info("Starting family type migration with batch size {}, mega-batch size {}", familyBatchSize, familyMegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for Family migration", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for Family migration");
-                familyMigrationService.displaySql();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting family type migration with batch size {}, mega-batch size {}", familyBatchSize, familyMegaBatchSize);
-
-                try {
-                    familyMigrationService.migrateFamilyTypeInBatches(familyBatchSize, familyMegaBatchSize);
-                    log.info("Family type migration completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("Family type migration failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            familyMigrationService.migrateFamilyTypeInBatches(familyBatchSize, familyMegaBatchSize);
+            log.info("Family type migration completed successfully");
+        } catch (Exception ex) {
+            log.error("Family type migration failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
     private void handleDisciplineMigration() {
-        while (true) {
-            displaySubMenu("PARTY_MEMBER_DISCIPLINE Migration");
+        log.info("Starting PARTY_MEMBER_DISCIPLINE migration with batch size {}, mega-batch size {}", disciplineBatchSize, disciplineMegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for PARTY_MEMBER_DISCIPLINE migration", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for PARTY_MEMBER_DISCIPLINE migration");
-                disciplineMigrationService.displaySql();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting PARTY_MEMBER_DISCIPLINE migration with batch size {}, mega-batch size {}", disciplineBatchSize, disciplineMegaBatchSize);
-
-                try {
-                    disciplineMigrationService.updateDisciplineFormAndReasonInBatches(disciplineBatchSize, disciplineMegaBatchSize);
-                    log.info("PARTY_MEMBER_DISCIPLINE migration completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("PARTY_MEMBER_DISCIPLINE migration failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            disciplineMigrationService.updateDisciplineFormAndReasonInBatches(disciplineBatchSize, disciplineMegaBatchSize);
+            log.info("PARTY_MEMBER_DISCIPLINE migration completed successfully");
+        } catch (Exception ex) {
+            log.error("PARTY_MEMBER_DISCIPLINE migration failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
     private void handleTrainingProcessMigration31() {
-        while (true) {
-            displaySubMenu("PARTY_MEMBER_TRAINING_PROCESS Migration - Chức năng 3.1 (Update MA_LLCT)");
+        log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.1 - Insert MA_LLCT records with batch size {}, mega-batch size {}", trainingProcess31BatchSize, trainingProcess31MegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for PARTY_MEMBER_TRAINING_PROCESS migration 3.1", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for PARTY_MEMBER_TRAINING_PROCESS migration 3.1");
-                trainingProcessMigrationService.displaySqlFor31();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 3 - Chức năng 3.1 - Insert MA_LLCT records with batch size {}, mega-batch size {}", trainingProcess31BatchSize, trainingProcess31MegaBatchSize);
-
-                try {
-                    trainingProcessMigrationService.insertMaLLCTRecords(trainingProcess31BatchSize, trainingProcess31MegaBatchSize);
-                    log.info("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 3 - Chức năng 3.1 completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 3 - Chức năng 3.1 failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            trainingProcessMigrationService.insertMaLLCTRecords(trainingProcess31BatchSize, trainingProcess31MegaBatchSize);
+            log.info("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.1 completed successfully");
+        } catch (Exception ex) {
+            log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.1 failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
     private void handleTrainingProcessMigration33() {
-        while (true) {
-            displaySubMenu("PARTY_MEMBER_TRAINING_PROCESS Migration - Chức năng 3.3 (Insert MA_BANGDT)");
+        log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.3 - Insert MA_BANGDT records with batch size {}, mega-batch size {}", trainingProcess33BatchSize, trainingProcess33MegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for PARTY_MEMBER_TRAINING_PROCESS migration 3.3", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for PARTY_MEMBER_TRAINING_PROCESS migration 3.3");
-                trainingProcessMigrationService.displaySqlFor33();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.3 - Insert MA_BANGDT records with batch size {}, mega-batch size {}", trainingProcess33BatchSize, trainingProcess33MegaBatchSize);
-
-                try {
-                    trainingProcessMigrationService.insertMaBANGDTRecords(trainingProcess33BatchSize, trainingProcess33MegaBatchSize);
-                    log.info("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.3 completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.3 failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            trainingProcessMigrationService.insertMaBANGDTRecords(trainingProcess33BatchSize, trainingProcess33MegaBatchSize);
+            log.info("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.3 completed successfully");
+        } catch (Exception ex) {
+            log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.3 failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
     private void handleTrainingProcessMigration34() {
-        while (true) {
-            displaySubMenu("PARTY_MEMBER_TRAINING_PROCESS Migration - Chức năng 3.4 (Insert MA_BANGNN)");
+        log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 6 - Chức năng 3.4 - Insert MA_BANGNN records with batch size {}, mega-batch size {}", trainingProcess34BatchSize, trainingProcess34MegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for PARTY_MEMBER_TRAINING_PROCESS migration 3.4", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for PARTY_MEMBER_TRAINING_PROCESS migration 3.4");
-                trainingProcessMigrationService.displaySqlFor34();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.4 - Insert MA_BANGNN records with batch size {}, mega-batch size {}", trainingProcess34BatchSize, trainingProcess34MegaBatchSize);
-
-                try {
-                    trainingProcessMigrationService.insertMaBANGNNRecords(trainingProcess34BatchSize, trainingProcess34MegaBatchSize);
-                    log.info("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.4 completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.4 failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            trainingProcessMigrationService.insertMaBANGNNRecords(trainingProcess34BatchSize, trainingProcess34MegaBatchSize);
+            log.info("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 6 - Chức năng 3.4 completed successfully");
+        } catch (Exception ex) {
+            log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 6 - Chức năng 3.4 failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
     private void handleFinancialConditionMigration() {
-        while (true) {
-            displaySubMenu("FINANCIAL_CONDITION Migration");
+        log.info("Starting FINANCIAL_CONDITION migration with batch size {}, mega-batch size {}", financialConditionBatchSize, financialConditionMegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for FINANCIAL_CONDITION migration", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for FINANCIAL_CONDITION migration");
-                financialConditionMigrationService.displaySql();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting FINANCIAL_CONDITION migration with batch size {}, mega-batch size {}", financialConditionBatchSize, financialConditionMegaBatchSize);
-
-                try {
-                    financialConditionMigrationService.mergeFinancialCondition(financialConditionBatchSize, financialConditionMegaBatchSize);
-                    log.info("FINANCIAL_CONDITION migration completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("FINANCIAL_CONDITION migration failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            financialConditionMigrationService.mergeFinancialCondition(financialConditionBatchSize, financialConditionMegaBatchSize);
+            log.info("FINANCIAL_CONDITION migration completed successfully");
+        } catch (Exception ex) {
+            log.error("FINANCIAL_CONDITION migration failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
     private void handleFinancialConditionListMigration() {
-        while (true) {
-            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge MA_NHADAT, DTNHA)");
+        log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 8) with batch size {}, mega-batch size {}", financialConditionListBatchSize, financialConditionListMegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration");
-                financialConditionListMigrationService.displaySql();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting FINANCIAL_CONDITION_LIST migration with batch size {}, mega-batch size {}", financialConditionListBatchSize, financialConditionListMegaBatchSize);
-
-                try {
-                    financialConditionListMigrationService.mergeFinancialConditionList(financialConditionListBatchSize, financialConditionListMegaBatchSize);
-                    log.info("FINANCIAL_CONDITION_LIST migration completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("FINANCIAL_CONDITION_LIST migration failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            financialConditionListMigrationService.mergeFinancialConditionList(financialConditionListBatchSize, financialConditionListMegaBatchSize);
+            log.info("FINANCIAL_CONDITION_LIST migration (Menu 8) completed successfully");
+        } catch (Exception ex) {
+            log.error("FINANCIAL_CONDITION_LIST migration (Menu 8) failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
     private void handleFinancialConditionList2Migration() {
-        while (true) {
-            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge NHA2, DTNHA2)");
+        log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 9) with batch size {}, mega-batch size {}", financialConditionList2BatchSize, financialConditionList2MegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration (Menu 8)", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration (Menu 8)");
-                financialConditionListMigrationService.displaySqlFor9();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 8) with batch size {}, mega-batch size {}", financialConditionList2BatchSize, financialConditionList2MegaBatchSize);
-
-                try {
-                    financialConditionListMigrationService.mergeFinancialConditionList2(financialConditionList2BatchSize, financialConditionList2MegaBatchSize);
-                    log.info("FINANCIAL_CONDITION_LIST migration (Menu 8) completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("FINANCIAL_CONDITION_LIST migration (Menu 8) failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            financialConditionListMigrationService.mergeFinancialConditionList2(financialConditionList2BatchSize, financialConditionList2MegaBatchSize);
+            log.info("FINANCIAL_CONDITION_LIST migration (Menu 9) completed successfully");
+        } catch (Exception ex) {
+            log.error("FINANCIAL_CONDITION_LIST migration (Menu 9) failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
     private void handleFinancialConditionList3Migration() {
-        while (true) {
-            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge TMP_DATCAP)");
+        log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 10) with batch size {}, mega-batch size {}", financialConditionList3BatchSize, financialConditionList3MegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration (Menu 9)", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration (Menu 9)");
-                financialConditionListMigrationService.displaySqlFor10();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 9) with batch size {}, mega-batch size {}", financialConditionList3BatchSize, financialConditionList3MegaBatchSize);
-
-                try {
-                    financialConditionListMigrationService.mergeFinancialConditionList3(financialConditionList3BatchSize, financialConditionList3MegaBatchSize);
-                    log.info("FINANCIAL_CONDITION_LIST migration (Menu 9) completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("FINANCIAL_CONDITION_LIST migration (Menu 9) failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            financialConditionListMigrationService.mergeFinancialConditionList3(financialConditionList3BatchSize, financialConditionList3MegaBatchSize);
+            log.info("FINANCIAL_CONDITION_LIST migration (Menu 10) completed successfully");
+        } catch (Exception ex) {
+            log.error("FINANCIAL_CONDITION_LIST migration (Menu 10) failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
     private void handleFinancialConditionList4Migration() {
-        while (true) {
-            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge DATMUA)");
+        log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 11) with batch size {}, mega-batch size {}", financialConditionList4BatchSize, financialConditionList4MegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration (Menu 10)", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration (Menu 10)");
-                financialConditionListMigrationService.displaySqlFor11();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 10) with batch size {}, mega-batch size {}", financialConditionList4BatchSize, financialConditionList4MegaBatchSize);
-
-                try {
-                    financialConditionListMigrationService.mergeFinancialConditionList4(financialConditionList4BatchSize, financialConditionList4MegaBatchSize);
-                    log.info("FINANCIAL_CONDITION_LIST migration (Menu 10) completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("FINANCIAL_CONDITION_LIST migration (Menu 10) failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            financialConditionListMigrationService.mergeFinancialConditionList4(financialConditionList4BatchSize, financialConditionList4MegaBatchSize);
+            log.info("FINANCIAL_CONDITION_LIST migration (Menu 11) completed successfully");
+        } catch (Exception ex) {
+            log.error("FINANCIAL_CONDITION_LIST migration (Menu 11) failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
     private void handleFinancialConditionList5Migration() {
-        while (true) {
-            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge DATTT)");
+        log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 12) with batch size {}, mega-batch size {}", financialConditionList5BatchSize, financialConditionList5MegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration (Menu 11)", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration (Menu 11)");
-                financialConditionListMigrationService.displaySqlFor12();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 11) with batch size {}, mega-batch size {}", financialConditionList5BatchSize, financialConditionList5MegaBatchSize);
-
-                try {
-                    financialConditionListMigrationService.mergeFinancialConditionList5(financialConditionList5BatchSize, financialConditionList5MegaBatchSize);
-                    log.info("FINANCIAL_CONDITION_LIST migration (Menu 11) completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("FINANCIAL_CONDITION_LIST migration (Menu 11) failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            financialConditionListMigrationService.mergeFinancialConditionList5(financialConditionList5BatchSize, financialConditionList5MegaBatchSize);
+            log.info("FINANCIAL_CONDITION_LIST migration (Menu 12) completed successfully");
+        } catch (Exception ex) {
+            log.error("FINANCIAL_CONDITION_LIST migration (Menu 12) failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
     private void handleFinancialConditionList6Migration() {
-        while (true) {
-            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge TSCOGTRI, TSGTRI)");
+        log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 13) with batch size {}, mega-batch size {}", financialConditionList6BatchSize, financialConditionList6MegaBatchSize);
 
-            String subKey = readKey();
-
-            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration (Menu 12)", subKey);
-
-            if ("0".equals(subKey)) {
-                log.info("Returning to main menu");
-                break;
-            } else if ("1".equals(subKey)) {
-                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration (Menu 12)");
-                financialConditionListMigrationService.displaySqlFor13();
-            } else if ("2".equals(subKey)) {
-                log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 12) with batch size {}, mega-batch size {}", financialConditionList6BatchSize, financialConditionList6MegaBatchSize);
-
-                try {
-                    financialConditionListMigrationService.mergeFinancialConditionList6(financialConditionList6BatchSize, financialConditionList6MegaBatchSize);
-                    log.info("FINANCIAL_CONDITION_LIST migration (Menu 12) completed successfully");
-                    log.info("Returning to main menu");
-                    break;
-                } catch (Exception ex) {
-                    log.error("FINANCIAL_CONDITION_LIST migration (Menu 12) failed: {}", ex.getMessage(), ex);
-                    System.exit(1);
-                }
-            } else {
-                log.warn("Invalid sub-menu key {}, please enter again", subKey);
-                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
-            }
+        try {
+            financialConditionListMigrationService.mergeFinancialConditionList6(financialConditionList6BatchSize, financialConditionList6MegaBatchSize);
+            log.info("FINANCIAL_CONDITION_LIST migration (Menu 13) completed successfully");
+        } catch (Exception ex) {
+            log.error("FINANCIAL_CONDITION_LIST migration (Menu 13) failed: {}", ex.getMessage(), ex);
+            System.exit(1);
         }
     }
 
@@ -560,14 +308,5 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         System.out.print("Enter option: ");
     }
 
-    private void displaySubMenu(String functionName) {
-        log.info("Sub-menu displayed for {}", functionName);
-
-        System.out.println("\n\n\n\n\n\n\n\n=== " + functionName + " ===");
-        System.out.println("0: Return to main menu");
-        System.out.println("1: View SQL (DELETE + UPDATE + SELECT)");
-        System.out.println("2: Execute migration");
-        System.out.print("Enter option: ");
-    }
 }
 

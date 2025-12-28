@@ -41,8 +41,8 @@ public class FinancialConditionMigrationService {
                             FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER a
                             WHERE a.V3_SOYEU_ID = s.SOYEU_ID
                               AND ROWNUM = 1)                                  AS PARTY_MEMBER_ID
-                    FROM CSDLDV_20.SOYEU s
-                             LEFT JOIN CSDLDV_20.orgHDONG_KT k
+                    FROM CSDLDV_PARTY_MEMBER.SOYEU s
+                             LEFT JOIN CSDLDV_PARTY_MEMBER.orgHDONG_KT k
                                        ON s.MA_HDKT = k.MA_HDKT
                     WHERE (NVL(s.THUNHAP1, 0) > 0
                         OR s.TMP_THUNHAP1 IS NOT NULL

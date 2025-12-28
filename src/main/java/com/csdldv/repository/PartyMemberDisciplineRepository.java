@@ -15,7 +15,7 @@ public interface PartyMemberDisciplineRepository extends JpaRepository<PartyMemb
             FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_DISCIPLINE x
             WHERE EXISTS (
                 SELECT 1
-                FROM CSDLDV_20.KT_KL kl
+                FROM CSDLDV_PARTY_MEMBER.KT_KL kl
                 JOIN CSDLDV_CATEGORY.CATEGORY c
                   ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
                 WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
@@ -30,7 +30,7 @@ public interface PartyMemberDisciplineRepository extends JpaRepository<PartyMemb
             FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_DISCIPLINE x
             WHERE EXISTS (
                 SELECT 1
-                FROM CSDLDV_25.KT_KL kl
+                FROM CSDLDV_PARTY_MEMBER.KT_KL kl
                 JOIN CSDLDV_CATEGORY.CATEGORY c
                   ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
                 WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
@@ -45,7 +45,7 @@ public interface PartyMemberDisciplineRepository extends JpaRepository<PartyMemb
             FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER_DISCIPLINE x
             WHERE EXISTS (
                 SELECT 1
-                FROM CSDLDV_26.KT_KL kl
+                FROM CSDLDV_PARTY_MEMBER.KT_KL kl
                 JOIN CSDLDV_CATEGORY.CATEGORY c
                   ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
                 WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
@@ -62,7 +62,7 @@ public interface PartyMemberDisciplineRepository extends JpaRepository<PartyMemb
             (
                 SELECT c.CATEGORY_ID, kl.LYDO
                 FROM CSDLDV_CATEGORY.CATEGORY c
-                JOIN CSDLDV_20.KT_KL kl
+                JOIN CSDLDV_PARTY_MEMBER.KT_KL kl
                   ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
                 WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
                   AND kl.GUIDKEY = x.V3_KT_KL_GUID
@@ -78,7 +78,7 @@ public interface PartyMemberDisciplineRepository extends JpaRepository<PartyMemb
             (
                 SELECT c.CATEGORY_ID, kl.LYDO
                 FROM CSDLDV_CATEGORY.CATEGORY c
-                JOIN CSDLDV_25.KT_KL kl
+                JOIN CSDLDV_PARTY_MEMBER.KT_KL kl
                   ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
                 WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
                   AND kl.GUIDKEY = x.V3_KT_KL_GUID
@@ -94,7 +94,7 @@ public interface PartyMemberDisciplineRepository extends JpaRepository<PartyMemb
             (
                 SELECT c.CATEGORY_ID, kl.LYDO
                 FROM CSDLDV_CATEGORY.CATEGORY c
-                JOIN CSDLDV_26.KT_KL kl
+                JOIN CSDLDV_PARTY_MEMBER.KT_KL kl
                   ON ('0' || c.CATEGORY_CODE) = kl.MA_KL
                 WHERE c.CATEGORY_GROUP_CODE = 'HINHTHUCKYLUAT'
                   AND kl.GUIDKEY = x.V3_KT_KL_GUID

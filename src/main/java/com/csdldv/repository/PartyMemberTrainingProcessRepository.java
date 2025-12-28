@@ -73,8 +73,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo lý luận chính trị'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_20.QTRINH_DT dt
-                         JOIN CSDLDV_20.ORGLLCT o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGLLCT o
                               ON dt.MA_LLCT = o.MA_LLCT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_LLCT
@@ -149,8 +149,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo lý luận chính trị'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_25.QTRINH_DT dt
-                         JOIN CSDLDV_25.ORGLLCT o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGLLCT o
                               ON dt.MA_LLCT = o.MA_LLCT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_LLCT
@@ -225,8 +225,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo lý luận chính trị'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_26.QTRINH_DT dt
-                         JOIN CSDLDV_26.ORGLLCT o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGLLCT o
                               ON dt.MA_LLCT = o.MA_LLCT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_LLCT
@@ -301,8 +301,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo chuyên môn'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_20.QTRINH_DT dt
-                         JOIN CSDLDV_20.ORGDAOTAO o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGDAOTAO o
                               ON dt.MA_BANGDT = o.MA_BANGDT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGDT
@@ -377,8 +377,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo chuyên môn'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_25.QTRINH_DT dt
-                         JOIN CSDLDV_25.ORGDAOTAO o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGDAOTAO o
                               ON dt.MA_BANGDT = o.MA_BANGDT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGDT
@@ -453,8 +453,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo chuyên môn'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_26.QTRINH_DT dt
-                         JOIN CSDLDV_26.ORGDAOTAO o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGDAOTAO o
                               ON dt.MA_BANGDT = o.MA_BANGDT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGDT
@@ -530,8 +530,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                           AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
                           AND c2.TCTK_CODE <> '0'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_20.QTRINH_DT dt
-                         JOIN CSDLDV_20.ORGN_NGU o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGN_NGU o
                               ON dt.MA_BANGNN = o.MA_BANGNN
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGNN
@@ -607,8 +607,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                           AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
                           AND c2.TCTK_CODE <> '0'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_25.QTRINH_DT dt
-                         JOIN CSDLDV_25.ORGN_NGU o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGN_NGU o
                               ON dt.MA_BANGNN = o.MA_BANGNN
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGNN
@@ -684,8 +684,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                           AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
                           AND c2.TCTK_CODE <> '0'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_26.QTRINH_DT dt
-                         JOIN CSDLDV_26.ORGN_NGU o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGN_NGU o
                               ON dt.MA_BANGNN = o.MA_BANGNN
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGNN
@@ -733,8 +733,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
 
     @Query(value = """
             SELECT dt.GUIDKEY
-            FROM CSDLDV_20.QTRINH_DT dt
-                     JOIN CSDLDV_20.ORGLLCT o
+            FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                     JOIN CSDLDV_PARTY_MEMBER.ORGLLCT o
                           ON dt.MA_LLCT = o.MA_LLCT
                      JOIN CSDLDV_CATEGORY.CATEGORY c1
                           ON c1.CATEGORY_NAME = o.TEN_LLCT
@@ -747,8 +747,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
 
     @Query(value = """
             SELECT dt.GUIDKEY
-            FROM CSDLDV_25.QTRINH_DT dt
-                     JOIN CSDLDV_25.ORGLLCT o
+            FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                     JOIN CSDLDV_PARTY_MEMBER.ORGLLCT o
                           ON dt.MA_LLCT = o.MA_LLCT
                      JOIN CSDLDV_CATEGORY.CATEGORY c1
                           ON c1.CATEGORY_NAME = o.TEN_LLCT
@@ -761,8 +761,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
 
     @Query(value = """
             SELECT dt.GUIDKEY
-            FROM CSDLDV_26.QTRINH_DT dt
-                     JOIN CSDLDV_26.ORGLLCT o
+            FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                     JOIN CSDLDV_PARTY_MEMBER.ORGLLCT o
                           ON dt.MA_LLCT = o.MA_LLCT
                      JOIN CSDLDV_CATEGORY.CATEGORY c1
                           ON c1.CATEGORY_NAME = o.TEN_LLCT
@@ -802,8 +802,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo lý luận chính trị'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_20.QTRINH_DT dt
-                         JOIN CSDLDV_20.ORGLLCT o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGLLCT o
                               ON dt.MA_LLCT = o.MA_LLCT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_LLCT
@@ -879,8 +879,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo lý luận chính trị'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_25.QTRINH_DT dt
-                         JOIN CSDLDV_25.ORGLLCT o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGLLCT o
                               ON dt.MA_LLCT = o.MA_LLCT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_LLCT
@@ -956,8 +956,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo lý luận chính trị'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_26.QTRINH_DT dt
-                         JOIN CSDLDV_26.ORGLLCT o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGLLCT o
                               ON dt.MA_LLCT = o.MA_LLCT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_LLCT
@@ -1006,8 +1006,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
 
     @Query(value = """
             SELECT dt.GUIDKEY
-            FROM CSDLDV_20.QTRINH_DT dt
-                     JOIN CSDLDV_20.ORGDAOTAO o
+            FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                     JOIN CSDLDV_PARTY_MEMBER.ORGDAOTAO o
                           ON dt.MA_BANGDT = o.MA_BANGDT
                      JOIN CSDLDV_CATEGORY.CATEGORY c1
                           ON c1.CATEGORY_NAME = o.TEN_BANGDT
@@ -1020,8 +1020,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
 
     @Query(value = """
             SELECT dt.GUIDKEY
-            FROM CSDLDV_25.QTRINH_DT dt
-                     JOIN CSDLDV_25.ORGDAOTAO o
+            FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                     JOIN CSDLDV_PARTY_MEMBER.ORGDAOTAO o
                           ON dt.MA_BANGDT = o.MA_BANGDT
                      JOIN CSDLDV_CATEGORY.CATEGORY c1
                           ON c1.CATEGORY_NAME = o.TEN_BANGDT
@@ -1034,8 +1034,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
 
     @Query(value = """
             SELECT dt.GUIDKEY
-            FROM CSDLDV_26.QTRINH_DT dt
-                     JOIN CSDLDV_26.ORGDAOTAO o
+            FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                     JOIN CSDLDV_PARTY_MEMBER.ORGDAOTAO o
                           ON dt.MA_BANGDT = o.MA_BANGDT
                      JOIN CSDLDV_CATEGORY.CATEGORY c1
                           ON c1.CATEGORY_NAME = o.TEN_BANGDT
@@ -1075,8 +1075,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo chuyên môn'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_20.QTRINH_DT dt
-                         JOIN CSDLDV_20.ORGDAOTAO o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGDAOTAO o
                               ON dt.MA_BANGDT = o.MA_BANGDT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGDT
@@ -1152,8 +1152,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo chuyên môn'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_25.QTRINH_DT dt
-                         JOIN CSDLDV_25.ORGDAOTAO o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGDAOTAO o
                               ON dt.MA_BANGDT = o.MA_BANGDT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGDT
@@ -1229,8 +1229,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         WHERE c2.CATEGORY_GROUP_CODE = 'PHANLOAIDAOTAO'
                           AND c2.CATEGORY_NAME = 'Đào tạo chuyên môn'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_26.QTRINH_DT dt
-                         JOIN CSDLDV_26.ORGDAOTAO o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGDAOTAO o
                               ON dt.MA_BANGDT = o.MA_BANGDT
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGDT
@@ -1279,8 +1279,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
 
     @Query(value = """
             SELECT dt.GUIDKEY
-            FROM CSDLDV_20.QTRINH_DT dt
-                     JOIN CSDLDV_20.ORGN_NGU o
+            FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                     JOIN CSDLDV_PARTY_MEMBER.ORGN_NGU o
                           ON dt.MA_BANGNN = o.MA_BANGNN
                      JOIN CSDLDV_CATEGORY.CATEGORY c1
                           ON c1.CATEGORY_NAME = o.TEN_BANGNN
@@ -1293,8 +1293,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
 
     @Query(value = """
             SELECT dt.GUIDKEY
-            FROM CSDLDV_25.QTRINH_DT dt
-                     JOIN CSDLDV_25.ORGN_NGU o
+            FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                     JOIN CSDLDV_PARTY_MEMBER.ORGN_NGU o
                           ON dt.MA_BANGNN = o.MA_BANGNN
                      JOIN CSDLDV_CATEGORY.CATEGORY c1
                           ON c1.CATEGORY_NAME = o.TEN_BANGNN
@@ -1307,8 +1307,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
 
     @Query(value = """
             SELECT dt.GUIDKEY
-            FROM CSDLDV_26.QTRINH_DT dt
-                     JOIN CSDLDV_26.ORGN_NGU o
+            FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                     JOIN CSDLDV_PARTY_MEMBER.ORGN_NGU o
                           ON dt.MA_BANGNN = o.MA_BANGNN
                      JOIN CSDLDV_CATEGORY.CATEGORY c1
                           ON c1.CATEGORY_NAME = o.TEN_BANGNN
@@ -1349,8 +1349,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                           AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
                           AND c2.TCTK_CODE <> '0'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_20.QTRINH_DT dt
-                         JOIN CSDLDV_20.ORGN_NGU o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGN_NGU o
                               ON dt.MA_BANGNN = o.MA_BANGNN
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGNN
@@ -1427,8 +1427,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                           AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
                           AND c2.TCTK_CODE <> '0'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_25.QTRINH_DT dt
-                         JOIN CSDLDV_25.ORGN_NGU o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGN_NGU o
                               ON dt.MA_BANGNN = o.MA_BANGNN
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGNN
@@ -1505,8 +1505,8 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                           AND c2.CATEGORY_NAME = 'Đào tạo ngoại ngữ'
                           AND c2.TCTK_CODE <> '0'
                           AND ROWNUM = 1) AS TRAINING_TYPE_ID
-                FROM CSDLDV_26.QTRINH_DT dt
-                         JOIN CSDLDV_26.ORGN_NGU o
+                FROM CSDLDV_PARTY_MEMBER.QTRINH_DT dt
+                         JOIN CSDLDV_PARTY_MEMBER.ORGN_NGU o
                               ON dt.MA_BANGNN = o.MA_BANGNN
                          JOIN CSDLDV_CATEGORY.CATEGORY c1
                               ON c1.CATEGORY_NAME = o.TEN_BANGNN

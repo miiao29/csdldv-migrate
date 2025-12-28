@@ -38,7 +38,7 @@ public class FinancialConditionListMigrationService {
                             FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER m
                             WHERE m.V3_SOYEU_ID = s.SOYEU_ID
                               AND ROWNUM = 1) AS PARTY_MEMBER_ID
-                    FROM CSDLDV_20.SOYEU s
+                    FROM CSDLDV_PARTY_MEMBER.SOYEU s
                     WHERE s.SYNCCODE <> 3
                 ) src
                 ON (
@@ -184,7 +184,7 @@ public class FinancialConditionListMigrationService {
                             FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER m
                             WHERE m.V3_SOYEU_ID = s.SOYEU_ID
                               AND ROWNUM = 1) AS PARTY_MEMBER_ID
-                    FROM CSDLDV_20.SOYEU s
+                    FROM CSDLDV_PARTY_MEMBER.SOYEU s
                     WHERE s.SYNCCODE <> 3
                       AND (s.DTNHA2 IS NOT NULL OR s.NHA2 IS NOT NULL)
                 ) src
@@ -330,7 +330,7 @@ public class FinancialConditionListMigrationService {
                             FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER m
                             WHERE m.V3_SOYEU_ID = s.SOYEU_ID
                               AND ROWNUM = 1) AS PARTY_MEMBER_ID
-                    FROM CSDLDV_20.SOYEU s
+                    FROM CSDLDV_PARTY_MEMBER.SOYEU s
                     WHERE s.SYNCCODE <> 3
                       AND s.TMP_DATCAP IS NOT NULL
                 ) src
@@ -475,7 +475,7 @@ public class FinancialConditionListMigrationService {
                             FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER m
                             WHERE m.V3_SOYEU_ID = s.SOYEU_ID
                               AND ROWNUM = 1) AS PARTY_MEMBER_ID
-                    FROM CSDLDV_20.SOYEU s
+                    FROM CSDLDV_PARTY_MEMBER.SOYEU s
                     WHERE s.SYNCCODE <> 3
                       AND s.DATMUA IS NOT NULL
                 ) src
@@ -620,7 +620,7 @@ public class FinancialConditionListMigrationService {
                             FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER m
                             WHERE m.V3_SOYEU_ID = s.SOYEU_ID
                               AND ROWNUM = 1) AS PARTY_MEMBER_ID
-                    FROM CSDLDV_20.SOYEU s
+                    FROM CSDLDV_PARTY_MEMBER.SOYEU s
                     WHERE s.SYNCCODE <> 3
                       AND s.DATTT IS NOT NULL
                 ) src
@@ -766,7 +766,7 @@ public class FinancialConditionListMigrationService {
                             FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER m
                             WHERE m.V3_SOYEU_ID = s.SOYEU_ID
                               AND ROWNUM = 1) AS PARTY_MEMBER_ID
-                    FROM CSDLDV_20.SOYEU s
+                    FROM CSDLDV_PARTY_MEMBER.SOYEU s
                     WHERE s.SYNCCODE <> 3
                       AND (s.TSCOGTRI IS NOT NULL OR s.TSGTRI IS NOT NULL)
                 ) src

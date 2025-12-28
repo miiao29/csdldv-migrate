@@ -12,7 +12,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
 
     @Query(value = """
             SELECT s.SOYEU_ID
-            FROM CSDLDV_20.SOYEU s
+            FROM CSDLDV_PARTY_MEMBER.SOYEU s
             WHERE (NVL(s.THUNHAP1, 0) > 0
                 OR s.TMP_THUNHAP1 IS NOT NULL
                 OR s.MA_HDKT IS NOT NULL)
@@ -23,7 +23,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
 
     @Query(value = """
             SELECT s.SOYEU_ID
-            FROM CSDLDV_25.SOYEU s
+            FROM CSDLDV_PARTY_MEMBER.SOYEU s
             WHERE (NVL(s.THUNHAP1, 0) > 0
                 OR s.TMP_THUNHAP1 IS NOT NULL
                 OR s.MA_HDKT IS NOT NULL)
@@ -34,7 +34,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
 
     @Query(value = """
             SELECT s.SOYEU_ID
-            FROM CSDLDV_26.SOYEU s
+            FROM CSDLDV_PARTY_MEMBER.SOYEU s
             WHERE (NVL(s.THUNHAP1, 0) > 0
                 OR s.TMP_THUNHAP1 IS NOT NULL
                 OR s.MA_HDKT IS NOT NULL)
@@ -56,8 +56,8 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER a
                         WHERE a.V3_SOYEU_ID = s.SOYEU_ID
                           AND ROWNUM = 1)                                  AS PARTY_MEMBER_ID
-                FROM CSDLDV_20.SOYEU s
-                         LEFT JOIN CSDLDV_20.orgHDONG_KT k
+                FROM CSDLDV_PARTY_MEMBER.SOYEU s
+                         LEFT JOIN CSDLDV_PARTY_MEMBER.orgHDONG_KT k
                                    ON s.MA_HDKT = k.MA_HDKT
                 WHERE s.SOYEU_ID IN (:soyeuIds)
             ) s
@@ -100,8 +100,8 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER a
                         WHERE a.V3_SOYEU_ID = s.SOYEU_ID
                           AND ROWNUM = 1)                                  AS PARTY_MEMBER_ID
-                FROM CSDLDV_25.SOYEU s
-                         LEFT JOIN CSDLDV_25.orgHDONG_KT k
+                FROM CSDLDV_PARTY_MEMBER.SOYEU s
+                         LEFT JOIN CSDLDV_PARTY_MEMBER.orgHDONG_KT k
                                    ON s.MA_HDKT = k.MA_HDKT
                 WHERE s.SOYEU_ID IN (:soyeuIds)
             ) s
@@ -144,8 +144,8 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER a
                         WHERE a.V3_SOYEU_ID = s.SOYEU_ID
                           AND ROWNUM = 1)                                  AS PARTY_MEMBER_ID
-                FROM CSDLDV_26.SOYEU s
-                         LEFT JOIN CSDLDV_26.orgHDONG_KT k
+                FROM CSDLDV_PARTY_MEMBER.SOYEU s
+                         LEFT JOIN CSDLDV_PARTY_MEMBER.orgHDONG_KT k
                                    ON s.MA_HDKT = k.MA_HDKT
                 WHERE s.SOYEU_ID IN (:soyeuIds)
             ) s
