@@ -56,7 +56,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
              NOTE,
              TRAINING_LEVEL_ID,
              TRAINING_TYPE_ID)
-            SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+            SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                    (SELECT p.PARTY_MEMBER_ID
                     FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                     WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
@@ -120,7 +120,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
              NOTE,
              TRAINING_LEVEL_ID,
              TRAINING_TYPE_ID)
-            SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+            SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                    (SELECT p.PARTY_MEMBER_ID
                     FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                     WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
@@ -184,7 +184,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
              NOTE,
              TRAINING_LEVEL_ID,
              TRAINING_TYPE_ID)
-            SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+            SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                    (SELECT p.PARTY_MEMBER_ID
                     FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                     WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
@@ -248,7 +248,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
              NOTE,
              TRAINING_LEVEL_ID,
              TRAINING_TYPE_ID)
-            SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+            SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                    (SELECT p.PARTY_MEMBER_ID
                     FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                     WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
@@ -312,7 +312,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
              NOTE,
              TRAINING_LEVEL_ID,
              TRAINING_TYPE_ID)
-            SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+            SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                    (SELECT p.PARTY_MEMBER_ID
                     FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                     WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
@@ -376,7 +376,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
              NOTE,
              TRAINING_LEVEL_ID,
              TRAINING_TYPE_ID)
-            SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+            SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                    (SELECT p.PARTY_MEMBER_ID
                     FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                     WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
@@ -440,7 +440,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
              NOTE,
              TRAINING_LEVEL_ID,
              TRAINING_TYPE_ID)
-            SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+            SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                    (SELECT p.PARTY_MEMBER_ID
                     FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                     WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
@@ -506,7 +506,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
              NOTE,
              TRAINING_LEVEL_ID,
              TRAINING_TYPE_ID)
-            SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+            SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                    (SELECT p.PARTY_MEMBER_ID
                     FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                     WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
@@ -572,7 +572,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
              NOTE,
              TRAINING_LEVEL_ID,
              TRAINING_TYPE_ID)
-            SELECT PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
+            SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                    (SELECT p.PARTY_MEMBER_ID
                     FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                     WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
