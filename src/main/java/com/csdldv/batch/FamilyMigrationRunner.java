@@ -201,15 +201,15 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 log.info("Displaying SQL for PARTY_MEMBER_TRAINING_PROCESS migration 3.1");
                 trainingProcessMigrationService.displaySqlFor31();
             } else if ("2".equals(subKey)) {
-                log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration 3.1 - Insert MA_LLCT records with batch size {}, mega-batch size {}", trainingProcess31BatchSize, trainingProcess31MegaBatchSize);
+                log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 3 - Chức năng 3.1 - Insert MA_LLCT records with batch size {}, mega-batch size {}", trainingProcess31BatchSize, trainingProcess31MegaBatchSize);
 
                 try {
                     trainingProcessMigrationService.insertMaLLCTRecords(trainingProcess31BatchSize, trainingProcess31MegaBatchSize);
-                    log.info("PARTY_MEMBER_TRAINING_PROCESS migration 3.1 completed successfully");
+                    log.info("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 3 - Chức năng 3.1 completed successfully");
                     log.info("Returning to main menu");
                     break;
                 } catch (Exception ex) {
-                    log.error("PARTY_MEMBER_TRAINING_PROCESS migration 3.1 failed: {}", ex.getMessage(), ex);
+                    log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 3 - Chức năng 3.1 failed: {}", ex.getMessage(), ex);
                     System.exit(1);
                 }
             } else {
@@ -234,15 +234,15 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 log.info("Displaying SQL for PARTY_MEMBER_TRAINING_PROCESS migration 3.3");
                 trainingProcessMigrationService.displaySqlFor33();
             } else if ("2".equals(subKey)) {
-                log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration 3.3 - Insert MA_BANGDT records with batch size {}, mega-batch size {}", trainingProcess33BatchSize, trainingProcess33MegaBatchSize);
+                log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.3 - Insert MA_BANGDT records with batch size {}, mega-batch size {}", trainingProcess33BatchSize, trainingProcess33MegaBatchSize);
 
                 try {
                     trainingProcessMigrationService.insertMaBANGDTRecords(trainingProcess33BatchSize, trainingProcess33MegaBatchSize);
-                    log.info("PARTY_MEMBER_TRAINING_PROCESS migration 3.3 completed successfully");
+                    log.info("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.3 completed successfully");
                     log.info("Returning to main menu");
                     break;
                 } catch (Exception ex) {
-                    log.error("PARTY_MEMBER_TRAINING_PROCESS migration 3.3 failed: {}", ex.getMessage(), ex);
+                    log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.3 failed: {}", ex.getMessage(), ex);
                     System.exit(1);
                 }
             } else {
@@ -267,15 +267,15 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 log.info("Displaying SQL for PARTY_MEMBER_TRAINING_PROCESS migration 3.4");
                 trainingProcessMigrationService.displaySqlFor34();
             } else if ("2".equals(subKey)) {
-                log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration 3.4 - Insert MA_BANGNN records with batch size {}, mega-batch size {}", trainingProcess34BatchSize, trainingProcess34MegaBatchSize);
+                log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.4 - Insert MA_BANGNN records with batch size {}, mega-batch size {}", trainingProcess34BatchSize, trainingProcess34MegaBatchSize);
 
                 try {
                     trainingProcessMigrationService.insertMaBANGNNRecords(trainingProcess34BatchSize, trainingProcess34MegaBatchSize);
-                    log.info("PARTY_MEMBER_TRAINING_PROCESS migration 3.4 completed successfully");
+                    log.info("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.4 completed successfully");
                     log.info("Returning to main menu");
                     break;
                 } catch (Exception ex) {
-                    log.error("PARTY_MEMBER_TRAINING_PROCESS migration 3.4 failed: {}", ex.getMessage(), ex);
+                    log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.4 failed: {}", ex.getMessage(), ex);
                     System.exit(1);
                 }
             } else {

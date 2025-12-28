@@ -352,66 +352,100 @@ public class TrainingProcessMigrationService {
     }
 
     public void insertMaLLCTRecords(int batchSize, int megaBatchSize) {
-        log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Chức năng 3.1: Insert MA_LLCT records with batch size {}, mega-batch size {}", batchSize, megaBatchSize);
+        log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 3 - Chức năng 3.1: Insert MA_LLCT records with batch size {}, mega-batch size {}", batchSize, megaBatchSize);
 
-        Integer inserted20 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting insert MA_LLCT records from CSDLDV_20");
-                int count = partyMemberTrainingProcessRepository.insertMaLLCTRecordsFrom20();
-                log.info("Inserted {} MA_LLCT records from CSDLDV_20 into PARTY_MEMBER_TRAINING_PROCESS", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error inserting MA_LLCT records from CSDLDV_20 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
-                throw ex;
+        log.info("Starting find GUIDs from CSDLDV_20");
+        java.util.List<String> guids20 = partyMemberTrainingProcessRepository.findAllMaLLCTGUIDsFrom20();
+        log.info("Found {} GUIDs from CSDLDV_20 to process", guids20.size());
+
+        log.info("Starting find GUIDs from CSDLDV_25");
+        java.util.List<String> guids25 = partyMemberTrainingProcessRepository.findAllMaLLCTGUIDsFrom25();
+        log.info("Found {} GUIDs from CSDLDV_25 to process", guids25.size());
+
+        log.info("Starting find GUIDs from CSDLDV_26");
+        java.util.List<String> guids26 = partyMemberTrainingProcessRepository.findAllMaLLCTGUIDsFrom26();
+        log.info("Found {} GUIDs from CSDLDV_26 to process", guids26.size());
+
+        java.util.List<String> allGuids = new java.util.ArrayList<>();
+        allGuids.addAll(guids20);
+        allGuids.addAll(guids25);
+        allGuids.addAll(guids26);
+        log.info("Found {} total GUIDs to process ({} from CSDLDV_20, {} from CSDLDV_25, {} from CSDLDV_26)", allGuids.size(), guids20.size(), guids25.size(), guids26.size());
+
+        int totalBatches = (int) Math.ceil((double) allGuids.size() / batchSize);
+        int totalMegaBatches = (int) Math.ceil((double) allGuids.size() / megaBatchSize);
+        log.info("Will execute {} MERGE statements in {} mega-batches ({} records per mega-batch), {} COMMITs total", totalBatches, totalMegaBatches, megaBatchSize, totalMegaBatches);
+
+        long totalInserted = 0;
+        int committedMegaBatches = 0;
+
+        try {
+            for (int megaStart = 0; megaStart < allGuids.size(); megaStart += megaBatchSize) {
+                final int currentMegaStart = megaStart;
+                int megaEnd = Math.min(currentMegaStart + megaBatchSize, allGuids.size());
+                int megaBatchNumber = (currentMegaStart / megaBatchSize) + 1;
+
+                log.info("Processing mega-batch {}/{} (records {} to {})", megaBatchNumber, totalMegaBatches, currentMegaStart + 1, megaEnd);
+
+                Integer megaInserted = transactionTemplate.execute(status -> {
+                    long inserted = 0;
+
+                    for (int i = currentMegaStart; i < megaEnd; i += batchSize) {
+                        int endIndex = Math.min(i + batchSize, megaEnd);
+                        java.util.List<String> batchGuids = allGuids.subList(i, endIndex);
+
+                        java.util.List<String> batchGuids20 = new java.util.ArrayList<>();
+                        java.util.List<String> batchGuids25 = new java.util.ArrayList<>();
+                        java.util.List<String> batchGuids26 = new java.util.ArrayList<>();
+
+                        for (String guid : batchGuids) {
+                            if (guids20.contains(guid)) {
+                                batchGuids20.add(guid);
+                            } else if (guids25.contains(guid)) {
+                                batchGuids25.add(guid);
+                            } else if (guids26.contains(guid)) {
+                                batchGuids26.add(guid);
+                            }
+                        }
+
+                        if (!batchGuids20.isEmpty()) {
+                            Integer batchInserted20 = partyMemberTrainingProcessRepository.bulkInsertMaLLCTRecordsFrom20(batchGuids20);
+                            inserted += batchInserted20;
+                        }
+
+                        if (!batchGuids25.isEmpty()) {
+                            Integer batchInserted25 = partyMemberTrainingProcessRepository.bulkInsertMaLLCTRecordsFrom25(batchGuids25);
+                            inserted += batchInserted25;
+                        }
+
+                        if (!batchGuids26.isEmpty()) {
+                            Integer batchInserted26 = partyMemberTrainingProcessRepository.bulkInsertMaLLCTRecordsFrom26(batchGuids26);
+                            inserted += batchInserted26;
+                        }
+                    }
+
+                    return (int) inserted;
+                });
+
+                if (megaInserted == null) {
+                    log.error("Mega-batch {}/{} transaction returned null, rolling back this mega-batch", megaBatchNumber, totalMegaBatches);
+                    throw new RuntimeException("Mega-batch " + megaBatchNumber + " failed, rolled back");
+                }
+
+                totalInserted += megaInserted;
+                committedMegaBatches++;
+                log.info("Mega-batch {}/{} committed successfully ({} records inserted, total: {})", megaBatchNumber, totalMegaBatches, megaInserted, totalInserted);
             }
-        });
 
-        if (inserted20 == null) {
-            log.error("Insert MA_LLCT records from CSDLDV_20 transaction returned null, rolling back");
-            throw new RuntimeException("Insert MA_LLCT records from CSDLDV_20 failed, rolled back");
+            log.info("=============================================");
+            log.info("Finished PARTY_MEMBER_TRAINING_PROCESS migration - Menu 3 - Chức năng 3.1");
+            log.info("Total records inserted: {}", totalInserted);
+            log.info("Total {} mega-batches committed successfully ({} COMMITs)", committedMegaBatches, committedMegaBatches);
+            log.info("=============================================");
+        } catch (Exception ex) {
+            log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 3 - Chức năng 3.1 encountered error at mega-batch {}/{}, last {} mega-batches rolled back: {}", committedMegaBatches + 1, totalMegaBatches, committedMegaBatches, ex.getMessage(), ex);
+            throw ex;
         }
-
-        Integer inserted25 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting insert MA_LLCT records from CSDLDV_25");
-                int count = partyMemberTrainingProcessRepository.insertMaLLCTRecordsFrom25();
-                log.info("Inserted {} MA_LLCT records from CSDLDV_25 into PARTY_MEMBER_TRAINING_PROCESS", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error inserting MA_LLCT records from CSDLDV_25 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
-                throw ex;
-            }
-        });
-
-        if (inserted25 == null) {
-            log.error("Insert MA_LLCT records from CSDLDV_25 transaction returned null, rolling back");
-            throw new RuntimeException("Insert MA_LLCT records from CSDLDV_25 failed, rolled back");
-        }
-
-        Integer inserted26 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting insert MA_LLCT records from CSDLDV_26");
-                int count = partyMemberTrainingProcessRepository.insertMaLLCTRecordsFrom26();
-                log.info("Inserted {} MA_LLCT records from CSDLDV_26 into PARTY_MEMBER_TRAINING_PROCESS", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error inserting MA_LLCT records from CSDLDV_26 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
-                throw ex;
-            }
-        });
-
-        if (inserted26 == null) {
-            log.error("Insert MA_LLCT records from CSDLDV_26 transaction returned null, rolling back");
-            throw new RuntimeException("Insert MA_LLCT records from CSDLDV_26 failed, rolled back");
-        }
-
-        log.info("=============================================");
-        log.info("Finished PARTY_MEMBER_TRAINING_PROCESS migration - Chức năng 3.1");
-        log.info("Total records inserted from CSDLDV_20: {}", inserted20);
-        log.info("Total records inserted from CSDLDV_25: {}", inserted25);
-        log.info("Total records inserted from CSDLDV_26: {}", inserted26);
-        log.info("Total records inserted: {}", inserted20 + inserted25 + inserted26);
-        log.info("=============================================");
     }
 
     public void displaySqlFor33() {
@@ -621,66 +655,100 @@ public class TrainingProcessMigrationService {
     }
 
     public void insertMaBANGDTRecords(int batchSize, int megaBatchSize) {
-        log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Chức năng 3.3: Insert MA_BANGDT records with batch size {}, mega-batch size {}", batchSize, megaBatchSize);
+        log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.3: Insert MA_BANGDT records with batch size {}, mega-batch size {}", batchSize, megaBatchSize);
 
-        Integer inserted20 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting insert MA_BANGDT records from CSDLDV_20");
-                int count = partyMemberTrainingProcessRepository.insertMaBANGDTRecordsFrom20();
-                log.info("Inserted {} MA_BANGDT records from CSDLDV_20 into PARTY_MEMBER_TRAINING_PROCESS", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error inserting MA_BANGDT records from CSDLDV_20 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
-                throw ex;
+        log.info("Starting find GUIDs from CSDLDV_20");
+        java.util.List<String> guids20 = partyMemberTrainingProcessRepository.findAllMaBANGDTGUIDsFrom20();
+        log.info("Found {} GUIDs from CSDLDV_20 to process", guids20.size());
+
+        log.info("Starting find GUIDs from CSDLDV_25");
+        java.util.List<String> guids25 = partyMemberTrainingProcessRepository.findAllMaBANGDTGUIDsFrom25();
+        log.info("Found {} GUIDs from CSDLDV_25 to process", guids25.size());
+
+        log.info("Starting find GUIDs from CSDLDV_26");
+        java.util.List<String> guids26 = partyMemberTrainingProcessRepository.findAllMaBANGDTGUIDsFrom26();
+        log.info("Found {} GUIDs from CSDLDV_26 to process", guids26.size());
+
+        java.util.List<String> allGuids = new java.util.ArrayList<>();
+        allGuids.addAll(guids20);
+        allGuids.addAll(guids25);
+        allGuids.addAll(guids26);
+        log.info("Found {} total GUIDs to process ({} from CSDLDV_20, {} from CSDLDV_25, {} from CSDLDV_26)", allGuids.size(), guids20.size(), guids25.size(), guids26.size());
+
+        int totalBatches = (int) Math.ceil((double) allGuids.size() / batchSize);
+        int totalMegaBatches = (int) Math.ceil((double) allGuids.size() / megaBatchSize);
+        log.info("Will execute {} MERGE statements in {} mega-batches ({} records per mega-batch), {} COMMITs total", totalBatches, totalMegaBatches, megaBatchSize, totalMegaBatches);
+
+        long totalInserted = 0;
+        int committedMegaBatches = 0;
+
+        try {
+            for (int megaStart = 0; megaStart < allGuids.size(); megaStart += megaBatchSize) {
+                final int currentMegaStart = megaStart;
+                int megaEnd = Math.min(currentMegaStart + megaBatchSize, allGuids.size());
+                int megaBatchNumber = (currentMegaStart / megaBatchSize) + 1;
+
+                log.info("Processing mega-batch {}/{} (records {} to {})", megaBatchNumber, totalMegaBatches, currentMegaStart + 1, megaEnd);
+
+                Integer megaInserted = transactionTemplate.execute(status -> {
+                    long inserted = 0;
+
+                    for (int i = currentMegaStart; i < megaEnd; i += batchSize) {
+                        int endIndex = Math.min(i + batchSize, megaEnd);
+                        java.util.List<String> batchGuids = allGuids.subList(i, endIndex);
+
+                        java.util.List<String> batchGuids20 = new java.util.ArrayList<>();
+                        java.util.List<String> batchGuids25 = new java.util.ArrayList<>();
+                        java.util.List<String> batchGuids26 = new java.util.ArrayList<>();
+
+                        for (String guid : batchGuids) {
+                            if (guids20.contains(guid)) {
+                                batchGuids20.add(guid);
+                            } else if (guids25.contains(guid)) {
+                                batchGuids25.add(guid);
+                            } else if (guids26.contains(guid)) {
+                                batchGuids26.add(guid);
+                            }
+                        }
+
+                        if (!batchGuids20.isEmpty()) {
+                            Integer batchInserted20 = partyMemberTrainingProcessRepository.bulkInsertMaBANGDTRecordsFrom20(batchGuids20);
+                            inserted += batchInserted20;
+                        }
+
+                        if (!batchGuids25.isEmpty()) {
+                            Integer batchInserted25 = partyMemberTrainingProcessRepository.bulkInsertMaBANGDTRecordsFrom25(batchGuids25);
+                            inserted += batchInserted25;
+                        }
+
+                        if (!batchGuids26.isEmpty()) {
+                            Integer batchInserted26 = partyMemberTrainingProcessRepository.bulkInsertMaBANGDTRecordsFrom26(batchGuids26);
+                            inserted += batchInserted26;
+                        }
+                    }
+
+                    return (int) inserted;
+                });
+
+                if (megaInserted == null) {
+                    log.error("Mega-batch {}/{} transaction returned null, rolling back this mega-batch", megaBatchNumber, totalMegaBatches);
+                    throw new RuntimeException("Mega-batch " + megaBatchNumber + " failed, rolled back");
+                }
+
+                totalInserted += megaInserted;
+                committedMegaBatches++;
+                log.info("Mega-batch {}/{} committed successfully ({} records inserted, total: {})", megaBatchNumber, totalMegaBatches, megaInserted, totalInserted);
             }
-        });
 
-        if (inserted20 == null) {
-            log.error("Insert MA_BANGDT records from CSDLDV_20 transaction returned null, rolling back");
-            throw new RuntimeException("Insert MA_BANGDT records from CSDLDV_20 failed, rolled back");
+            log.info("=============================================");
+            log.info("Finished PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.3");
+            log.info("Total records inserted: {}", totalInserted);
+            log.info("Total {} mega-batches committed successfully ({} COMMITs)", committedMegaBatches, committedMegaBatches);
+            log.info("=============================================");
+        } catch (Exception ex) {
+            log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 4 - Chức năng 3.3 encountered error at mega-batch {}/{}, last {} mega-batches rolled back: {}", committedMegaBatches + 1, totalMegaBatches, committedMegaBatches, ex.getMessage(), ex);
+            throw ex;
         }
-
-        Integer inserted25 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting insert MA_BANGDT records from CSDLDV_25");
-                int count = partyMemberTrainingProcessRepository.insertMaBANGDTRecordsFrom25();
-                log.info("Inserted {} MA_BANGDT records from CSDLDV_25 into PARTY_MEMBER_TRAINING_PROCESS", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error inserting MA_BANGDT records from CSDLDV_25 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
-                throw ex;
-            }
-        });
-
-        if (inserted25 == null) {
-            log.error("Insert MA_BANGDT records from CSDLDV_25 transaction returned null, rolling back");
-            throw new RuntimeException("Insert MA_BANGDT records from CSDLDV_25 failed, rolled back");
-        }
-
-        Integer inserted26 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting insert MA_BANGDT records from CSDLDV_26");
-                int count = partyMemberTrainingProcessRepository.insertMaBANGDTRecordsFrom26();
-                log.info("Inserted {} MA_BANGDT records from CSDLDV_26 into PARTY_MEMBER_TRAINING_PROCESS", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error inserting MA_BANGDT records from CSDLDV_26 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
-                throw ex;
-            }
-        });
-
-        if (inserted26 == null) {
-            log.error("Insert MA_BANGDT records from CSDLDV_26 transaction returned null, rolling back");
-            throw new RuntimeException("Insert MA_BANGDT records from CSDLDV_26 failed, rolled back");
-        }
-
-        log.info("=============================================");
-        log.info("Finished PARTY_MEMBER_TRAINING_PROCESS migration - Chức năng 3.3");
-        log.info("Total records inserted from CSDLDV_20: {}", inserted20);
-        log.info("Total records inserted from CSDLDV_25: {}", inserted25);
-        log.info("Total records inserted from CSDLDV_26: {}", inserted26);
-        log.info("Total records inserted: {}", inserted20 + inserted25 + inserted26);
-        log.info("=============================================");
     }
 
     public void displaySqlFor34() {
@@ -896,66 +964,100 @@ public class TrainingProcessMigrationService {
     }
 
     public void insertMaBANGNNRecords(int batchSize, int megaBatchSize) {
-        log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Chức năng 3.4: Insert MA_BANGNN records with batch size {}, mega-batch size {}", batchSize, megaBatchSize);
+        log.info("Starting PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.4: Insert MA_BANGNN records with batch size {}, mega-batch size {}", batchSize, megaBatchSize);
 
-        Integer inserted20 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting insert MA_BANGNN records from CSDLDV_20");
-                int count = partyMemberTrainingProcessRepository.insertMaBANGNNRecordsFrom20();
-                log.info("Inserted {} MA_BANGNN records from CSDLDV_20 into PARTY_MEMBER_TRAINING_PROCESS", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error inserting MA_BANGNN records from CSDLDV_20 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
-                throw ex;
+        log.info("Starting find GUIDs from CSDLDV_20");
+        java.util.List<String> guids20 = partyMemberTrainingProcessRepository.findAllMaBANGNNGUIDsFrom20();
+        log.info("Found {} GUIDs from CSDLDV_20 to process", guids20.size());
+
+        log.info("Starting find GUIDs from CSDLDV_25");
+        java.util.List<String> guids25 = partyMemberTrainingProcessRepository.findAllMaBANGNNGUIDsFrom25();
+        log.info("Found {} GUIDs from CSDLDV_25 to process", guids25.size());
+
+        log.info("Starting find GUIDs from CSDLDV_26");
+        java.util.List<String> guids26 = partyMemberTrainingProcessRepository.findAllMaBANGNNGUIDsFrom26();
+        log.info("Found {} GUIDs from CSDLDV_26 to process", guids26.size());
+
+        java.util.List<String> allGuids = new java.util.ArrayList<>();
+        allGuids.addAll(guids20);
+        allGuids.addAll(guids25);
+        allGuids.addAll(guids26);
+        log.info("Found {} total GUIDs to process ({} from CSDLDV_20, {} from CSDLDV_25, {} from CSDLDV_26)", allGuids.size(), guids20.size(), guids25.size(), guids26.size());
+
+        int totalBatches = (int) Math.ceil((double) allGuids.size() / batchSize);
+        int totalMegaBatches = (int) Math.ceil((double) allGuids.size() / megaBatchSize);
+        log.info("Will execute {} MERGE statements in {} mega-batches ({} records per mega-batch), {} COMMITs total", totalBatches, totalMegaBatches, megaBatchSize, totalMegaBatches);
+
+        long totalInserted = 0;
+        int committedMegaBatches = 0;
+
+        try {
+            for (int megaStart = 0; megaStart < allGuids.size(); megaStart += megaBatchSize) {
+                final int currentMegaStart = megaStart;
+                int megaEnd = Math.min(currentMegaStart + megaBatchSize, allGuids.size());
+                int megaBatchNumber = (currentMegaStart / megaBatchSize) + 1;
+
+                log.info("Processing mega-batch {}/{} (records {} to {})", megaBatchNumber, totalMegaBatches, currentMegaStart + 1, megaEnd);
+
+                Integer megaInserted = transactionTemplate.execute(status -> {
+                    long inserted = 0;
+
+                    for (int i = currentMegaStart; i < megaEnd; i += batchSize) {
+                        int endIndex = Math.min(i + batchSize, megaEnd);
+                        java.util.List<String> batchGuids = allGuids.subList(i, endIndex);
+
+                        java.util.List<String> batchGuids20 = new java.util.ArrayList<>();
+                        java.util.List<String> batchGuids25 = new java.util.ArrayList<>();
+                        java.util.List<String> batchGuids26 = new java.util.ArrayList<>();
+
+                        for (String guid : batchGuids) {
+                            if (guids20.contains(guid)) {
+                                batchGuids20.add(guid);
+                            } else if (guids25.contains(guid)) {
+                                batchGuids25.add(guid);
+                            } else if (guids26.contains(guid)) {
+                                batchGuids26.add(guid);
+                            }
+                        }
+
+                        if (!batchGuids20.isEmpty()) {
+                            Integer batchInserted20 = partyMemberTrainingProcessRepository.bulkInsertMaBANGNNRecordsFrom20(batchGuids20);
+                            inserted += batchInserted20;
+                        }
+
+                        if (!batchGuids25.isEmpty()) {
+                            Integer batchInserted25 = partyMemberTrainingProcessRepository.bulkInsertMaBANGNNRecordsFrom25(batchGuids25);
+                            inserted += batchInserted25;
+                        }
+
+                        if (!batchGuids26.isEmpty()) {
+                            Integer batchInserted26 = partyMemberTrainingProcessRepository.bulkInsertMaBANGNNRecordsFrom26(batchGuids26);
+                            inserted += batchInserted26;
+                        }
+                    }
+
+                    return (int) inserted;
+                });
+
+                if (megaInserted == null) {
+                    log.error("Mega-batch {}/{} transaction returned null, rolling back this mega-batch", megaBatchNumber, totalMegaBatches);
+                    throw new RuntimeException("Mega-batch " + megaBatchNumber + " failed, rolled back");
+                }
+
+                totalInserted += megaInserted;
+                committedMegaBatches++;
+                log.info("Mega-batch {}/{} committed successfully ({} records inserted, total: {})", megaBatchNumber, totalMegaBatches, megaInserted, totalInserted);
             }
-        });
 
-        if (inserted20 == null) {
-            log.error("Insert MA_BANGNN records from CSDLDV_20 transaction returned null, rolling back");
-            throw new RuntimeException("Insert MA_BANGNN records from CSDLDV_20 failed, rolled back");
+            log.info("=============================================");
+            log.info("Finished PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.4");
+            log.info("Total records inserted: {}", totalInserted);
+            log.info("Total {} mega-batches committed successfully ({} COMMITs)", committedMegaBatches, committedMegaBatches);
+            log.info("=============================================");
+        } catch (Exception ex) {
+            log.error("PARTY_MEMBER_TRAINING_PROCESS migration - Menu 5 - Chức năng 3.4 encountered error at mega-batch {}/{}, last {} mega-batches rolled back: {}", committedMegaBatches + 1, totalMegaBatches, committedMegaBatches, ex.getMessage(), ex);
+            throw ex;
         }
-
-        Integer inserted25 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting insert MA_BANGNN records from CSDLDV_25");
-                int count = partyMemberTrainingProcessRepository.insertMaBANGNNRecordsFrom25();
-                log.info("Inserted {} MA_BANGNN records from CSDLDV_25 into PARTY_MEMBER_TRAINING_PROCESS", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error inserting MA_BANGNN records from CSDLDV_25 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
-                throw ex;
-            }
-        });
-
-        if (inserted25 == null) {
-            log.error("Insert MA_BANGNN records from CSDLDV_25 transaction returned null, rolling back");
-            throw new RuntimeException("Insert MA_BANGNN records from CSDLDV_25 failed, rolled back");
-        }
-
-        Integer inserted26 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting insert MA_BANGNN records from CSDLDV_26");
-                int count = partyMemberTrainingProcessRepository.insertMaBANGNNRecordsFrom26();
-                log.info("Inserted {} MA_BANGNN records from CSDLDV_26 into PARTY_MEMBER_TRAINING_PROCESS", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error inserting MA_BANGNN records from CSDLDV_26 into PARTY_MEMBER_TRAINING_PROCESS: {}", ex.getMessage(), ex);
-                throw ex;
-            }
-        });
-
-        if (inserted26 == null) {
-            log.error("Insert MA_BANGNN records from CSDLDV_26 transaction returned null, rolling back");
-            throw new RuntimeException("Insert MA_BANGNN records from CSDLDV_26 failed, rolled back");
-        }
-
-        log.info("=============================================");
-        log.info("Finished PARTY_MEMBER_TRAINING_PROCESS migration - Chức năng 3.4");
-        log.info("Total records inserted from CSDLDV_20: {}", inserted20);
-        log.info("Total records inserted from CSDLDV_25: {}", inserted25);
-        log.info("Total records inserted from CSDLDV_26: {}", inserted26);
-        log.info("Total records inserted: {}", inserted20 + inserted25 + inserted26);
-        log.info("=============================================");
     }
 }
 
