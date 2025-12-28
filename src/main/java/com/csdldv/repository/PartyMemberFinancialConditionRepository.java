@@ -47,8 +47,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FINANCIAL_CONDITION t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_FINANCIAL_CONDITION_seq.NEXTVAL AS FINANCIAL_CONDITION_ID,
-                       1                                                   AS IS_ACTIVE,
+                SELECT 1                                                   AS IS_ACTIVE,
                        s.THUNHAP1                                          AS HOUSEHOLD_ANNUAL_INCOME,
                        s.TMP_THUNHAP1                                      AS PER_CAPITA_ANNUAL_INCOME,
                        k.TEN_HDKT                                          AS ECONOMIC_ACTIVITY,
@@ -78,7 +77,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                         ECONOMIC_ACTIVITY,
                         COUNT_WORKER,
                         PARTY_MEMBER_ID)
-                VALUES (s.FINANCIAL_CONDITION_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_FINANCIAL_CONDITION_seq.NEXTVAL,
                         s.IS_ACTIVE,
                         s.HOUSEHOLD_ANNUAL_INCOME,
                         s.PER_CAPITA_ANNUAL_INCOME,
@@ -92,8 +91,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FINANCIAL_CONDITION t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_FINANCIAL_CONDITION_seq.NEXTVAL AS FINANCIAL_CONDITION_ID,
-                       1                                                   AS IS_ACTIVE,
+                SELECT 1                                                   AS IS_ACTIVE,
                        s.THUNHAP1                                          AS HOUSEHOLD_ANNUAL_INCOME,
                        s.TMP_THUNHAP1                                      AS PER_CAPITA_ANNUAL_INCOME,
                        k.TEN_HDKT                                          AS ECONOMIC_ACTIVITY,
@@ -123,7 +121,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                         ECONOMIC_ACTIVITY,
                         COUNT_WORKER,
                         PARTY_MEMBER_ID)
-                VALUES (s.FINANCIAL_CONDITION_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_FINANCIAL_CONDITION_seq.NEXTVAL,
                         s.IS_ACTIVE,
                         s.HOUSEHOLD_ANNUAL_INCOME,
                         s.PER_CAPITA_ANNUAL_INCOME,
@@ -137,8 +135,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_FINANCIAL_CONDITION t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_FINANCIAL_CONDITION_seq.NEXTVAL AS FINANCIAL_CONDITION_ID,
-                       1                                                   AS IS_ACTIVE,
+                SELECT 1                                                   AS IS_ACTIVE,
                        s.THUNHAP1                                          AS HOUSEHOLD_ANNUAL_INCOME,
                        s.TMP_THUNHAP1                                      AS PER_CAPITA_ANNUAL_INCOME,
                        k.TEN_HDKT                                          AS ECONOMIC_ACTIVITY,
@@ -168,7 +165,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                         ECONOMIC_ACTIVITY,
                         COUNT_WORKER,
                         PARTY_MEMBER_ID)
-                VALUES (s.FINANCIAL_CONDITION_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_FINANCIAL_CONDITION_seq.NEXTVAL,
                         s.IS_ACTIVE,
                         s.HOUSEHOLD_ANNUAL_INCOME,
                         s.PER_CAPITA_ANNUAL_INCOME,

@@ -189,6 +189,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP_TYPE = 1
                     AND tgt.DETAIL = src.MA_NHADAT
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DTNHA,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -229,6 +233,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP_TYPE = 1
                     AND tgt.DETAIL = src.MA_NHADAT
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DTNHA,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -269,6 +277,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP_TYPE = 1
                     AND tgt.DETAIL = src.MA_NHADAT
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DTNHA,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -309,6 +321,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP_TYPE = 2
                     AND tgt.DETAIL = src.NHA2
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DTNHA2,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -349,6 +365,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP_TYPE = 2
                     AND tgt.DETAIL = src.NHA2
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DTNHA2,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -389,6 +409,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP_TYPE = 2
                     AND tgt.DETAIL = src.NHA2
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DTNHA2,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -427,6 +451,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP = 2
                     AND tgt.ASSET_GROUP_TYPE = 1
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.TMP_DATCAP,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -465,6 +493,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP = 2
                     AND tgt.ASSET_GROUP_TYPE = 1
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.TMP_DATCAP,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -503,6 +535,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP = 2
                     AND tgt.ASSET_GROUP_TYPE = 1
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.TMP_DATCAP,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -541,6 +577,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP = 2
                     AND tgt.ASSET_GROUP_TYPE = 2
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DATMUA,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -579,6 +619,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP = 2
                     AND tgt.ASSET_GROUP_TYPE = 2
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DATMUA,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -617,6 +661,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP = 2
                     AND tgt.ASSET_GROUP_TYPE = 2
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DATMUA,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -655,6 +703,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP = 2
                     AND tgt.ASSET_GROUP_TYPE = 3
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DATTT,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -693,6 +745,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP = 2
                     AND tgt.ASSET_GROUP_TYPE = 3
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DATTT,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -731,6 +787,10 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                     AND tgt.ASSET_GROUP = 2
                     AND tgt.ASSET_GROUP_TYPE = 3
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.DATTT,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -769,6 +829,11 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                 tgt.PARTY_MEMBER_ID = src.PARTY_MEMBER_ID
                     AND tgt.ASSET_GROUP = 3
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.TSGTRI,
+                    tgt.DETAIL = src.TSCOGTRI,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -807,6 +872,11 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                 tgt.PARTY_MEMBER_ID = src.PARTY_MEMBER_ID
                     AND tgt.ASSET_GROUP = 3
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.TSGTRI,
+                    tgt.DETAIL = src.TSCOGTRI,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
@@ -845,6 +915,11 @@ public interface FinancialConditionListRepository extends JpaRepository<Financia
                 tgt.PARTY_MEMBER_ID = src.PARTY_MEMBER_ID
                     AND tgt.ASSET_GROUP = 3
             )
+            WHEN MATCHED THEN
+                UPDATE SET
+                    tgt.ASSETS_VALUE = src.TSGTRI,
+                    tgt.DETAIL = src.TSCOGTRI,
+                    tgt.IS_ACTIVE = 1
             WHEN NOT MATCHED THEN
                 INSERT (FINANCIAL_CONDITION_LIST_ID,
                         ASSET_GROUP,
