@@ -17,6 +17,7 @@ public class FamilyMigrationRunner implements CommandLineRunner {
     private final DisciplineMigrationService disciplineMigrationService;
     private final TrainingProcessMigrationService trainingProcessMigrationService;
     private final FinancialConditionMigrationService financialConditionMigrationService;
+    private final FinancialConditionListMigrationService financialConditionListMigrationService;
     private final int familyBatchSize;
     private final int familyMegaBatchSize;
     private final int disciplineBatchSize;
@@ -31,12 +32,25 @@ public class FamilyMigrationRunner implements CommandLineRunner {
     private final int trainingProcess34MegaBatchSize;
     private final int financialConditionBatchSize;
     private final int financialConditionMegaBatchSize;
+    private final int financialConditionListBatchSize;
+    private final int financialConditionListMegaBatchSize;
+    private final int financialConditionList2BatchSize;
+    private final int financialConditionList2MegaBatchSize;
+    private final int financialConditionList3BatchSize;
+    private final int financialConditionList3MegaBatchSize;
+    private final int financialConditionList4BatchSize;
+    private final int financialConditionList4MegaBatchSize;
+    private final int financialConditionList5BatchSize;
+    private final int financialConditionList5MegaBatchSize;
+    private final int financialConditionList6BatchSize;
+    private final int financialConditionList6MegaBatchSize;
 
-    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, DisciplineMigrationService disciplineMigrationService, TrainingProcessMigrationService trainingProcessMigrationService, FinancialConditionMigrationService financialConditionMigrationService, @Value("${migration.family.batch-size:1000}") int familyBatchSize, @Value("${migration.family.mega-batch-size:100000}") int familyMegaBatchSize, @Value("${migration.discipline.batch-size:1000}") int disciplineBatchSize, @Value("${migration.discipline.mega-batch-size:100000}") int disciplineMegaBatchSize, @Value("${migration.training-process-31.batch-size:1000}") int trainingProcess31BatchSize, @Value("${migration.training-process-31.mega-batch-size:100000}") int trainingProcess31MegaBatchSize, @Value("${migration.training-process-32.batch-size:1000}") int trainingProcess32BatchSize, @Value("${migration.training-process-32.mega-batch-size:100000}") int trainingProcess32MegaBatchSize, @Value("${migration.training-process-33.batch-size:1000}") int trainingProcess33BatchSize, @Value("${migration.training-process-33.mega-batch-size:100000}") int trainingProcess33MegaBatchSize, @Value("${migration.training-process-34.batch-size:1000}") int trainingProcess34BatchSize, @Value("${migration.training-process-34.mega-batch-size:100000}") int trainingProcess34MegaBatchSize, @Value("${migration.financial-condition.batch-size:1000}") int financialConditionBatchSize, @Value("${migration.financial-condition.mega-batch-size:100000}") int financialConditionMegaBatchSize) {
+    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, DisciplineMigrationService disciplineMigrationService, TrainingProcessMigrationService trainingProcessMigrationService, FinancialConditionMigrationService financialConditionMigrationService, FinancialConditionListMigrationService financialConditionListMigrationService, @Value("${migration.family.batch-size:1000}") int familyBatchSize, @Value("${migration.family.mega-batch-size:100000}") int familyMegaBatchSize, @Value("${migration.discipline.batch-size:1000}") int disciplineBatchSize, @Value("${migration.discipline.mega-batch-size:100000}") int disciplineMegaBatchSize, @Value("${migration.training-process-31.batch-size:1000}") int trainingProcess31BatchSize, @Value("${migration.training-process-31.mega-batch-size:100000}") int trainingProcess31MegaBatchSize, @Value("${migration.training-process-32.batch-size:1000}") int trainingProcess32BatchSize, @Value("${migration.training-process-32.mega-batch-size:100000}") int trainingProcess32MegaBatchSize, @Value("${migration.training-process-33.batch-size:1000}") int trainingProcess33BatchSize, @Value("${migration.training-process-33.mega-batch-size:100000}") int trainingProcess33MegaBatchSize, @Value("${migration.training-process-34.batch-size:1000}") int trainingProcess34BatchSize, @Value("${migration.training-process-34.mega-batch-size:100000}") int trainingProcess34MegaBatchSize, @Value("${migration.financial-condition.batch-size:1000}") int financialConditionBatchSize, @Value("${migration.financial-condition.mega-batch-size:100000}") int financialConditionMegaBatchSize, @Value("${migration.financial-condition-list.batch-size:1000}") int financialConditionListBatchSize, @Value("${migration.financial-condition-list.mega-batch-size:100000}") int financialConditionListMegaBatchSize, @Value("${migration.financial-condition-list-2.batch-size:1000}") int financialConditionList2BatchSize, @Value("${migration.financial-condition-list-2.mega-batch-size:100000}") int financialConditionList2MegaBatchSize, @Value("${migration.financial-condition-list-3.batch-size:1000}") int financialConditionList3BatchSize, @Value("${migration.financial-condition-list-3.mega-batch-size:100000}") int financialConditionList3MegaBatchSize, @Value("${migration.financial-condition-list-4.batch-size:1000}") int financialConditionList4BatchSize, @Value("${migration.financial-condition-list-4.mega-batch-size:100000}") int financialConditionList4MegaBatchSize, @Value("${migration.financial-condition-list-5.batch-size:1000}") int financialConditionList5BatchSize, @Value("${migration.financial-condition-list-5.mega-batch-size:100000}") int financialConditionList5MegaBatchSize, @Value("${migration.financial-condition-list-6.batch-size:1000}") int financialConditionList6BatchSize, @Value("${migration.financial-condition-list-6.mega-batch-size:100000}") int financialConditionList6MegaBatchSize) {
         this.familyMigrationService = familyMigrationService;
         this.disciplineMigrationService = disciplineMigrationService;
         this.trainingProcessMigrationService = trainingProcessMigrationService;
         this.financialConditionMigrationService = financialConditionMigrationService;
+        this.financialConditionListMigrationService = financialConditionListMigrationService;
         this.familyBatchSize = familyBatchSize;
         this.familyMegaBatchSize = familyMegaBatchSize;
         this.disciplineBatchSize = disciplineBatchSize;
@@ -51,6 +65,18 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         this.trainingProcess34MegaBatchSize = trainingProcess34MegaBatchSize;
         this.financialConditionBatchSize = financialConditionBatchSize;
         this.financialConditionMegaBatchSize = financialConditionMegaBatchSize;
+        this.financialConditionListBatchSize = financialConditionListBatchSize;
+        this.financialConditionListMegaBatchSize = financialConditionListMegaBatchSize;
+        this.financialConditionList2BatchSize = financialConditionList2BatchSize;
+        this.financialConditionList2MegaBatchSize = financialConditionList2MegaBatchSize;
+        this.financialConditionList3BatchSize = financialConditionList3BatchSize;
+        this.financialConditionList3MegaBatchSize = financialConditionList3MegaBatchSize;
+        this.financialConditionList4BatchSize = financialConditionList4BatchSize;
+        this.financialConditionList4MegaBatchSize = financialConditionList4MegaBatchSize;
+        this.financialConditionList5BatchSize = financialConditionList5BatchSize;
+        this.financialConditionList5MegaBatchSize = financialConditionList5MegaBatchSize;
+        this.financialConditionList6BatchSize = financialConditionList6BatchSize;
+        this.financialConditionList6MegaBatchSize = financialConditionList6MegaBatchSize;
     }
 
     @Override
@@ -81,9 +107,21 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 handleTrainingProcessMigration34();
             } else if ("7".equals(key)) {
                 handleFinancialConditionMigration();
+            } else if ("8".equals(key)) {
+                handleFinancialConditionListMigration();
+            } else if ("9".equals(key)) {
+                handleFinancialConditionList2Migration();
+            } else if ("10".equals(key)) {
+                handleFinancialConditionList3Migration();
+            } else if ("11".equals(key)) {
+                handleFinancialConditionList4Migration();
+            } else if ("12".equals(key)) {
+                handleFinancialConditionList5Migration();
+            } else if ("13".equals(key)) {
+                handleFinancialConditionList6Migration();
             } else {
                 log.warn("Invalid migration key {}, please enter again", key);
-                System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, 2 for PARTY_MEMBER_DISCIPLINE migration, 3 for PARTY_MEMBER_TRAINING_PROCESS migration (Delete invalid or duplicate records), 4 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_LLCT), 5 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_BANGDT), 6 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_BANGNN), or 7 for FINANCIAL_CONDITION migration.");
+                System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, 2 for PARTY_MEMBER_DISCIPLINE migration, 3 for PARTY_MEMBER_TRAINING_PROCESS migration (Delete invalid or duplicate records), 4 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_LLCT), 5 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_BANGDT), 6 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_BANGNN), 7 for FINANCIAL_CONDITION migration, 8 for FINANCIAL_CONDITION_LIST migration (Merge MA_NHADAT, DTNHA), 9 for FINANCIAL_CONDITION_LIST migration (Merge NHA2, DTNHA2), 10 for FINANCIAL_CONDITION_LIST migration (Merge TMP_DATCAP), 11 for FINANCIAL_CONDITION_LIST migration (Merge DATMUA), 12 for FINANCIAL_CONDITION_LIST migration (Merge DATTT), or 13 for FINANCIAL_CONDITION_LIST migration (Merge TSCOGTRI, TSGTRI).");
             }
         }
     }
@@ -319,6 +357,204 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         }
     }
 
+    private void handleFinancialConditionListMigration() {
+        while (true) {
+            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge MA_NHADAT, DTNHA)");
+
+            String subKey = readKey();
+
+            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration", subKey);
+
+            if ("0".equals(subKey)) {
+                log.info("Returning to main menu");
+                break;
+            } else if ("1".equals(subKey)) {
+                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration");
+                financialConditionListMigrationService.displaySql();
+            } else if ("2".equals(subKey)) {
+                log.info("Starting FINANCIAL_CONDITION_LIST migration with batch size {}, mega-batch size {}", financialConditionListBatchSize, financialConditionListMegaBatchSize);
+
+                try {
+                    financialConditionListMigrationService.mergeFinancialConditionList(financialConditionListBatchSize, financialConditionListMegaBatchSize);
+                    log.info("FINANCIAL_CONDITION_LIST migration completed successfully");
+                    log.info("Returning to main menu");
+                    break;
+                } catch (Exception ex) {
+                    log.error("FINANCIAL_CONDITION_LIST migration failed: {}", ex.getMessage(), ex);
+                    System.exit(1);
+                }
+            } else {
+                log.warn("Invalid sub-menu key {}, please enter again", subKey);
+                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
+            }
+        }
+    }
+
+    private void handleFinancialConditionList2Migration() {
+        while (true) {
+            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge NHA2, DTNHA2)");
+
+            String subKey = readKey();
+
+            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration (Menu 9)", subKey);
+
+            if ("0".equals(subKey)) {
+                log.info("Returning to main menu");
+                break;
+            } else if ("1".equals(subKey)) {
+                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration (Menu 9)");
+                financialConditionListMigrationService.displaySqlFor9();
+            } else if ("2".equals(subKey)) {
+                log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 9) with batch size {}, mega-batch size {}", financialConditionList2BatchSize, financialConditionList2MegaBatchSize);
+
+                try {
+                    financialConditionListMigrationService.mergeFinancialConditionList2(financialConditionList2BatchSize, financialConditionList2MegaBatchSize);
+                    log.info("FINANCIAL_CONDITION_LIST migration (Menu 9) completed successfully");
+                    log.info("Returning to main menu");
+                    break;
+                } catch (Exception ex) {
+                    log.error("FINANCIAL_CONDITION_LIST migration (Menu 9) failed: {}", ex.getMessage(), ex);
+                    System.exit(1);
+                }
+            } else {
+                log.warn("Invalid sub-menu key {}, please enter again", subKey);
+                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
+            }
+        }
+    }
+
+    private void handleFinancialConditionList3Migration() {
+        while (true) {
+            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge TMP_DATCAP)");
+
+            String subKey = readKey();
+
+            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration (Menu 10)", subKey);
+
+            if ("0".equals(subKey)) {
+                log.info("Returning to main menu");
+                break;
+            } else if ("1".equals(subKey)) {
+                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration (Menu 10)");
+                financialConditionListMigrationService.displaySqlFor10();
+            } else if ("2".equals(subKey)) {
+                log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 10) with batch size {}, mega-batch size {}", financialConditionList3BatchSize, financialConditionList3MegaBatchSize);
+
+                try {
+                    financialConditionListMigrationService.mergeFinancialConditionList3(financialConditionList3BatchSize, financialConditionList3MegaBatchSize);
+                    log.info("FINANCIAL_CONDITION_LIST migration (Menu 10) completed successfully");
+                    log.info("Returning to main menu");
+                    break;
+                } catch (Exception ex) {
+                    log.error("FINANCIAL_CONDITION_LIST migration (Menu 10) failed: {}", ex.getMessage(), ex);
+                    System.exit(1);
+                }
+            } else {
+                log.warn("Invalid sub-menu key {}, please enter again", subKey);
+                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
+            }
+        }
+    }
+
+    private void handleFinancialConditionList4Migration() {
+        while (true) {
+            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge DATMUA)");
+
+            String subKey = readKey();
+
+            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration (Menu 11)", subKey);
+
+            if ("0".equals(subKey)) {
+                log.info("Returning to main menu");
+                break;
+            } else if ("1".equals(subKey)) {
+                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration (Menu 11)");
+                financialConditionListMigrationService.displaySqlFor11();
+            } else if ("2".equals(subKey)) {
+                log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 11) with batch size {}, mega-batch size {}", financialConditionList4BatchSize, financialConditionList4MegaBatchSize);
+
+                try {
+                    financialConditionListMigrationService.mergeFinancialConditionList4(financialConditionList4BatchSize, financialConditionList4MegaBatchSize);
+                    log.info("FINANCIAL_CONDITION_LIST migration (Menu 11) completed successfully");
+                    log.info("Returning to main menu");
+                    break;
+                } catch (Exception ex) {
+                    log.error("FINANCIAL_CONDITION_LIST migration (Menu 11) failed: {}", ex.getMessage(), ex);
+                    System.exit(1);
+                }
+            } else {
+                log.warn("Invalid sub-menu key {}, please enter again", subKey);
+                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
+            }
+        }
+    }
+
+    private void handleFinancialConditionList5Migration() {
+        while (true) {
+            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge DATTT)");
+
+            String subKey = readKey();
+
+            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration (Menu 12)", subKey);
+
+            if ("0".equals(subKey)) {
+                log.info("Returning to main menu");
+                break;
+            } else if ("1".equals(subKey)) {
+                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration (Menu 12)");
+                financialConditionListMigrationService.displaySqlFor12();
+            } else if ("2".equals(subKey)) {
+                log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 12) with batch size {}, mega-batch size {}", financialConditionList5BatchSize, financialConditionList5MegaBatchSize);
+
+                try {
+                    financialConditionListMigrationService.mergeFinancialConditionList5(financialConditionList5BatchSize, financialConditionList5MegaBatchSize);
+                    log.info("FINANCIAL_CONDITION_LIST migration (Menu 12) completed successfully");
+                    log.info("Returning to main menu");
+                    break;
+                } catch (Exception ex) {
+                    log.error("FINANCIAL_CONDITION_LIST migration (Menu 12) failed: {}", ex.getMessage(), ex);
+                    System.exit(1);
+                }
+            } else {
+                log.warn("Invalid sub-menu key {}, please enter again", subKey);
+                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
+            }
+        }
+    }
+
+    private void handleFinancialConditionList6Migration() {
+        while (true) {
+            displaySubMenu("FINANCIAL_CONDITION_LIST Migration (Merge TSCOGTRI, TSGTRI)");
+
+            String subKey = readKey();
+
+            log.info("Received sub-menu key {} for FINANCIAL_CONDITION_LIST migration (Menu 13)", subKey);
+
+            if ("0".equals(subKey)) {
+                log.info("Returning to main menu");
+                break;
+            } else if ("1".equals(subKey)) {
+                log.info("Displaying SQL for FINANCIAL_CONDITION_LIST migration (Menu 13)");
+                financialConditionListMigrationService.displaySqlFor13();
+            } else if ("2".equals(subKey)) {
+                log.info("Starting FINANCIAL_CONDITION_LIST migration (Menu 13) with batch size {}, mega-batch size {}", financialConditionList6BatchSize, financialConditionList6MegaBatchSize);
+
+                try {
+                    financialConditionListMigrationService.mergeFinancialConditionList6(financialConditionList6BatchSize, financialConditionList6MegaBatchSize);
+                    log.info("FINANCIAL_CONDITION_LIST migration (Menu 13) completed successfully");
+                    log.info("Returning to main menu");
+                    break;
+                } catch (Exception ex) {
+                    log.error("FINANCIAL_CONDITION_LIST migration (Menu 13) failed: {}", ex.getMessage(), ex);
+                    System.exit(1);
+                }
+            } else {
+                log.warn("Invalid sub-menu key {}, please enter again", subKey);
+                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
+            }
+        }
+    }
+
     @SuppressWarnings("resource")
     private String readKey() {
         Console console = System.console();
@@ -340,14 +576,27 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         log.info("Main migration menu displayed");
 
         System.out.println("=== Main Migration Menu ===\n");
+
         System.out.println("0: Exit\n");
+
         System.out.println("1: Family Migration (batch size " + familyBatchSize + ")\n");
+
         System.out.println("2: PARTY_MEMBER_DISCIPLINE Migration (batch size " + disciplineBatchSize + ")\n");
+
         System.out.println("3: PARTY_MEMBER_TRAINING_PROCESS Migration (Delete invalid or duplicate records) (batch size " + trainingProcess32BatchSize + ")");
         System.out.println("4: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_LLCT) (batch size " + trainingProcess31BatchSize + ")");
         System.out.println("5: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_BANGDT) (batch size " + trainingProcess33BatchSize + ")");
         System.out.println("6: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_BANGNN) (batch size " + trainingProcess34BatchSize + ")\n");
+
         System.out.println("7: FINANCIAL_CONDITION Migration (batch size " + financialConditionBatchSize + ")\n");
+
+        System.out.println("8: FINANCIAL_CONDITION_LIST Migration (Merge MA_NHADAT, DTNHA) (batch size " + financialConditionListBatchSize + ")");
+        System.out.println("9: FINANCIAL_CONDITION_LIST Migration (Merge NHA2, DTNHA2) (batch size " + financialConditionList2BatchSize + ")");
+        System.out.println("10: FINANCIAL_CONDITION_LIST Migration (Merge TMP_DATCAP) (batch size " + financialConditionList3BatchSize + ")");
+        System.out.println("11: FINANCIAL_CONDITION_LIST Migration (Merge DATMUA) (batch size " + financialConditionList4BatchSize + ")");
+        System.out.println("12: FINANCIAL_CONDITION_LIST Migration (Merge DATTT) (batch size " + financialConditionList5BatchSize + ")");
+        System.out.println("13: FINANCIAL_CONDITION_LIST Migration (Merge TSCOGTRI, TSGTRI) (batch size " + financialConditionList6BatchSize + ")\n");
+
         System.out.print("Enter option: ");
     }
 
