@@ -5,9 +5,43 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Repository
 public interface PartyMemberFinancialConditionRepository extends JpaRepository<PartyMemberFinancialCondition, String> {
+
+    @Query(value = """
+            SELECT s.SOYEU_ID
+            FROM CSDLDV_20.SOYEU s
+            WHERE (NVL(s.THUNHAP1, 0) > 0
+                OR s.TMP_THUNHAP1 IS NOT NULL
+                OR s.MA_HDKT IS NOT NULL)
+              AND s.SYNCCODE <> 3
+            ORDER BY s.SOYEU_ID
+            """, nativeQuery = true)
+    List<String> findAllSoyeuIdsFrom20();
+
+    @Query(value = """
+            SELECT s.SOYEU_ID
+            FROM CSDLDV_25.SOYEU s
+            WHERE (NVL(s.THUNHAP1, 0) > 0
+                OR s.TMP_THUNHAP1 IS NOT NULL
+                OR s.MA_HDKT IS NOT NULL)
+              AND s.SYNCCODE <> 3
+            ORDER BY s.SOYEU_ID
+            """, nativeQuery = true)
+    List<String> findAllSoyeuIdsFrom25();
+
+    @Query(value = """
+            SELECT s.SOYEU_ID
+            FROM CSDLDV_26.SOYEU s
+            WHERE (NVL(s.THUNHAP1, 0) > 0
+                OR s.TMP_THUNHAP1 IS NOT NULL
+                OR s.MA_HDKT IS NOT NULL)
+              AND s.SYNCCODE <> 3
+            ORDER BY s.SOYEU_ID
+            """, nativeQuery = true)
+    List<String> findAllSoyeuIdsFrom26();
 
     @Modifying
     @Query(value = """
@@ -26,10 +60,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                 FROM CSDLDV_20.SOYEU s
                          LEFT JOIN CSDLDV_20.orgHDONG_KT k
                                    ON s.MA_HDKT = k.MA_HDKT
-                WHERE (NVL(s.THUNHAP1, 0) > 0
-                    OR s.TMP_THUNHAP1 IS NOT NULL
-                    OR s.MA_HDKT IS NOT NULL)
-                  AND s.SYNCCODE <> 3
+                WHERE s.SOYEU_ID IN (:soyeuIds)
             ) s
             ON (t.PARTY_MEMBER_ID = s.PARTY_MEMBER_ID)
             WHEN MATCHED THEN
@@ -55,7 +86,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                         s.COUNT_WORKER,
                         s.PARTY_MEMBER_ID)
             """, nativeQuery = true)
-    int mergeFinancialConditionFrom20();
+    int mergeFinancialConditionFrom20(List<String> soyeuIds);
 
     @Modifying
     @Query(value = """
@@ -74,10 +105,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                 FROM CSDLDV_25.SOYEU s
                          LEFT JOIN CSDLDV_25.orgHDONG_KT k
                                    ON s.MA_HDKT = k.MA_HDKT
-                WHERE (NVL(s.THUNHAP1, 0) > 0
-                    OR s.TMP_THUNHAP1 IS NOT NULL
-                    OR s.MA_HDKT IS NOT NULL)
-                  AND s.SYNCCODE <> 3
+                WHERE s.SOYEU_ID IN (:soyeuIds)
             ) s
             ON (t.PARTY_MEMBER_ID = s.PARTY_MEMBER_ID)
             WHEN MATCHED THEN
@@ -103,7 +131,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                         s.COUNT_WORKER,
                         s.PARTY_MEMBER_ID)
             """, nativeQuery = true)
-    int mergeFinancialConditionFrom25();
+    int mergeFinancialConditionFrom25(List<String> soyeuIds);
 
     @Modifying
     @Query(value = """
@@ -122,10 +150,7 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                 FROM CSDLDV_26.SOYEU s
                          LEFT JOIN CSDLDV_26.orgHDONG_KT k
                                    ON s.MA_HDKT = k.MA_HDKT
-                WHERE (NVL(s.THUNHAP1, 0) > 0
-                    OR s.TMP_THUNHAP1 IS NOT NULL
-                    OR s.MA_HDKT IS NOT NULL)
-                  AND s.SYNCCODE <> 3
+                WHERE s.SOYEU_ID IN (:soyeuIds)
             ) s
             ON (t.PARTY_MEMBER_ID = s.PARTY_MEMBER_ID)
             WHEN MATCHED THEN
@@ -151,6 +176,6 @@ public interface PartyMemberFinancialConditionRepository extends JpaRepository<P
                         s.COUNT_WORKER,
                         s.PARTY_MEMBER_ID)
             """, nativeQuery = true)
-    int mergeFinancialConditionFrom26();
+    int mergeFinancialConditionFrom26(List<String> soyeuIds);
 }
 

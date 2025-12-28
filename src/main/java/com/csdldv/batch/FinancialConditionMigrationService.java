@@ -180,64 +180,98 @@ public class FinancialConditionMigrationService {
     public void mergeFinancialCondition(int batchSize, int megaBatchSize) {
         log.info("Starting FINANCIAL_CONDITION migration with batch size {}, mega-batch size {}", batchSize, megaBatchSize);
 
-        Integer merged20 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting merge FINANCIAL_CONDITION records from CSDLDV_20");
-                int count = partyMemberFinancialConditionRepository.mergeFinancialConditionFrom20();
-                log.info("Merged {} FINANCIAL_CONDITION records from CSDLDV_20", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error merging FINANCIAL_CONDITION records from CSDLDV_20: {}", ex.getMessage(), ex);
-                throw ex;
+        log.info("Starting find SOYEU_IDs from CSDLDV_20");
+        java.util.List<String> soyeuIds20 = partyMemberFinancialConditionRepository.findAllSoyeuIdsFrom20();
+        log.info("Found {} SOYEU_IDs from CSDLDV_20 to merge", soyeuIds20.size());
+
+        log.info("Starting find SOYEU_IDs from CSDLDV_25");
+        java.util.List<String> soyeuIds25 = partyMemberFinancialConditionRepository.findAllSoyeuIdsFrom25();
+        log.info("Found {} SOYEU_IDs from CSDLDV_25 to merge", soyeuIds25.size());
+
+        log.info("Starting find SOYEU_IDs from CSDLDV_26");
+        java.util.List<String> soyeuIds26 = partyMemberFinancialConditionRepository.findAllSoyeuIdsFrom26();
+        log.info("Found {} SOYEU_IDs from CSDLDV_26 to merge", soyeuIds26.size());
+
+        java.util.List<String> allSoyeuIds = new java.util.ArrayList<>();
+        allSoyeuIds.addAll(soyeuIds20);
+        allSoyeuIds.addAll(soyeuIds25);
+        allSoyeuIds.addAll(soyeuIds26);
+        log.info("Found {} total SOYEU_IDs to merge ({} from CSDLDV_20, {} from CSDLDV_25, {} from CSDLDV_26)", allSoyeuIds.size(), soyeuIds20.size(), soyeuIds25.size(), soyeuIds26.size());
+
+        int totalBatches = (int) Math.ceil((double) allSoyeuIds.size() / batchSize);
+        int totalMegaBatches = (int) Math.ceil((double) allSoyeuIds.size() / megaBatchSize);
+        log.info("Will execute {} MERGE statements in {} mega-batches ({} records per mega-batch), {} COMMITs total", totalBatches, totalMegaBatches, megaBatchSize, totalMegaBatches);
+
+        long totalMerged = 0;
+        int committedMegaBatches = 0;
+
+        try {
+            for (int megaStart = 0; megaStart < allSoyeuIds.size(); megaStart += megaBatchSize) {
+                final int currentMegaStart = megaStart;
+                int megaEnd = Math.min(currentMegaStart + megaBatchSize, allSoyeuIds.size());
+                int megaBatchNumber = (currentMegaStart / megaBatchSize) + 1;
+
+                log.info("Processing mega-batch {}/{} (records {} to {})", megaBatchNumber, totalMegaBatches, currentMegaStart + 1, megaEnd);
+
+                Integer megaMerged = transactionTemplate.execute(status -> {
+                    long merged = 0;
+
+                    for (int i = currentMegaStart; i < megaEnd; i += batchSize) {
+                        int endIndex = Math.min(i + batchSize, megaEnd);
+                        java.util.List<String> batchSoyeuIds = allSoyeuIds.subList(i, endIndex);
+
+                        java.util.List<String> batchSoyeuIds20 = new java.util.ArrayList<>();
+                        java.util.List<String> batchSoyeuIds25 = new java.util.ArrayList<>();
+                        java.util.List<String> batchSoyeuIds26 = new java.util.ArrayList<>();
+
+                        for (String soyeuId : batchSoyeuIds) {
+                            if (soyeuIds20.contains(soyeuId)) {
+                                batchSoyeuIds20.add(soyeuId);
+                            } else if (soyeuIds25.contains(soyeuId)) {
+                                batchSoyeuIds25.add(soyeuId);
+                            } else if (soyeuIds26.contains(soyeuId)) {
+                                batchSoyeuIds26.add(soyeuId);
+                            }
+                        }
+
+                        if (!batchSoyeuIds20.isEmpty()) {
+                            Integer batchMerged20 = partyMemberFinancialConditionRepository.mergeFinancialConditionFrom20(batchSoyeuIds20);
+                            merged += batchMerged20;
+                        }
+
+                        if (!batchSoyeuIds25.isEmpty()) {
+                            Integer batchMerged25 = partyMemberFinancialConditionRepository.mergeFinancialConditionFrom25(batchSoyeuIds25);
+                            merged += batchMerged25;
+                        }
+
+                        if (!batchSoyeuIds26.isEmpty()) {
+                            Integer batchMerged26 = partyMemberFinancialConditionRepository.mergeFinancialConditionFrom26(batchSoyeuIds26);
+                            merged += batchMerged26;
+                        }
+                    }
+
+                    return (int) merged;
+                });
+
+                if (megaMerged == null) {
+                    log.error("Mega-batch {}/{} transaction returned null, rolling back this mega-batch", megaBatchNumber, totalMegaBatches);
+                    throw new RuntimeException("Mega-batch " + megaBatchNumber + " failed, rolled back");
+                }
+
+                totalMerged += megaMerged;
+                committedMegaBatches++;
+                log.info("Mega-batch {}/{} committed successfully ({} records merged, total: {})", megaBatchNumber, totalMegaBatches, megaMerged, totalMerged);
             }
-        });
 
-        if (merged20 == null) {
-            log.error("Merge FINANCIAL_CONDITION records from CSDLDV_20 transaction returned null, rolling back");
-            throw new RuntimeException("Merge FINANCIAL_CONDITION records from CSDLDV_20 failed, rolled back");
+            log.info("=============================================");
+            log.info("Finished FINANCIAL_CONDITION migration, total merged {} rows", totalMerged);
+            log.info("Total {} mega-batches committed successfully ({} COMMITs)", committedMegaBatches, committedMegaBatches);
+            log.info("=============================================");
+        } catch (Exception ex) {
+            log.error("FINANCIAL_CONDITION migration encountered error at mega-batch {}/{}, last {} mega-batches rolled back: {}", committedMegaBatches + 1, totalMegaBatches, committedMegaBatches, ex.getMessage(), ex);
+
+            throw ex;
         }
-
-        Integer merged25 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting merge FINANCIAL_CONDITION records from CSDLDV_25");
-                int count = partyMemberFinancialConditionRepository.mergeFinancialConditionFrom25();
-                log.info("Merged {} FINANCIAL_CONDITION records from CSDLDV_25", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error merging FINANCIAL_CONDITION records from CSDLDV_25: {}", ex.getMessage(), ex);
-                throw ex;
-            }
-        });
-
-        if (merged25 == null) {
-            log.error("Merge FINANCIAL_CONDITION records from CSDLDV_25 transaction returned null, rolling back");
-            throw new RuntimeException("Merge FINANCIAL_CONDITION records from CSDLDV_25 failed, rolled back");
-        }
-
-        Integer merged26 = transactionTemplate.execute(status -> {
-            try {
-                log.info("Starting merge FINANCIAL_CONDITION records from CSDLDV_26");
-                int count = partyMemberFinancialConditionRepository.mergeFinancialConditionFrom26();
-                log.info("Merged {} FINANCIAL_CONDITION records from CSDLDV_26", count);
-                return count;
-            } catch (Exception ex) {
-                log.error("Error merging FINANCIAL_CONDITION records from CSDLDV_26: {}", ex.getMessage(), ex);
-                throw ex;
-            }
-        });
-
-        if (merged26 == null) {
-            log.error("Merge FINANCIAL_CONDITION records from CSDLDV_26 transaction returned null, rolling back");
-            throw new RuntimeException("Merge FINANCIAL_CONDITION records from CSDLDV_26 failed, rolled back");
-        }
-
-        log.info("=============================================");
-        log.info("Finished FINANCIAL_CONDITION migration");
-        log.info("Total records merged from CSDLDV_20: {}", merged20);
-        log.info("Total records merged from CSDLDV_25: {}", merged25);
-        log.info("Total records merged from CSDLDV_26: {}", merged26);
-        log.info("Total records merged: {}", merged20 + merged25 + merged26);
-        log.info("=============================================");
     }
 }
 
