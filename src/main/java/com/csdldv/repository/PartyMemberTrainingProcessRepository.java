@@ -46,8 +46,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL AS PARTY_MEMBER_TRAINING_ID,
-                       (SELECT p.PARTY_MEMBER_ID
+                SELECT (SELECT p.PARTY_MEMBER_ID
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                         WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
                           AND ROWNUM = 1) AS PARTY_MEMBER_ID,
@@ -105,7 +104,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         NOTE,
                         TRAINING_LEVEL_ID,
                         TRAINING_TYPE_ID)
-                VALUES (s.PARTY_MEMBER_TRAINING_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                         s.PARTY_MEMBER_ID,
                         s.IS_ACTIVE,
                         s.V3_QUATRINH_DAOTAO_GUID,
@@ -123,8 +122,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL AS PARTY_MEMBER_TRAINING_ID,
-                       (SELECT p.PARTY_MEMBER_ID
+                SELECT (SELECT p.PARTY_MEMBER_ID
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                         WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
                           AND ROWNUM = 1) AS PARTY_MEMBER_ID,
@@ -182,7 +180,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         NOTE,
                         TRAINING_LEVEL_ID,
                         TRAINING_TYPE_ID)
-                VALUES (s.PARTY_MEMBER_TRAINING_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                         s.PARTY_MEMBER_ID,
                         s.IS_ACTIVE,
                         s.V3_QUATRINH_DAOTAO_GUID,
@@ -200,8 +198,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL AS PARTY_MEMBER_TRAINING_ID,
-                       (SELECT p.PARTY_MEMBER_ID
+                SELECT (SELECT p.PARTY_MEMBER_ID
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                         WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
                           AND ROWNUM = 1) AS PARTY_MEMBER_ID,
@@ -259,7 +256,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         NOTE,
                         TRAINING_LEVEL_ID,
                         TRAINING_TYPE_ID)
-                VALUES (s.PARTY_MEMBER_TRAINING_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                         s.PARTY_MEMBER_ID,
                         s.IS_ACTIVE,
                         s.V3_QUATRINH_DAOTAO_GUID,
@@ -277,8 +274,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL AS PARTY_MEMBER_TRAINING_ID,
-                       (SELECT p.PARTY_MEMBER_ID
+                SELECT (SELECT p.PARTY_MEMBER_ID
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                         WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
                           AND ROWNUM = 1) AS PARTY_MEMBER_ID,
@@ -336,7 +332,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         NOTE,
                         TRAINING_LEVEL_ID,
                         TRAINING_TYPE_ID)
-                VALUES (s.PARTY_MEMBER_TRAINING_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                         s.PARTY_MEMBER_ID,
                         s.IS_ACTIVE,
                         s.V3_QUATRINH_DAOTAO_GUID,
@@ -354,8 +350,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL AS PARTY_MEMBER_TRAINING_ID,
-                       (SELECT p.PARTY_MEMBER_ID
+                SELECT (SELECT p.PARTY_MEMBER_ID
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                         WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
                           AND ROWNUM = 1) AS PARTY_MEMBER_ID,
@@ -413,7 +408,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         NOTE,
                         TRAINING_LEVEL_ID,
                         TRAINING_TYPE_ID)
-                VALUES (s.PARTY_MEMBER_TRAINING_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                         s.PARTY_MEMBER_ID,
                         s.IS_ACTIVE,
                         s.V3_QUATRINH_DAOTAO_GUID,
@@ -431,8 +426,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL AS PARTY_MEMBER_TRAINING_ID,
-                       (SELECT p.PARTY_MEMBER_ID
+                SELECT (SELECT p.PARTY_MEMBER_ID
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                         WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
                           AND ROWNUM = 1) AS PARTY_MEMBER_ID,
@@ -490,7 +484,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         NOTE,
                         TRAINING_LEVEL_ID,
                         TRAINING_TYPE_ID)
-                VALUES (s.PARTY_MEMBER_TRAINING_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                         s.PARTY_MEMBER_ID,
                         s.IS_ACTIVE,
                         s.V3_QUATRINH_DAOTAO_GUID,
@@ -508,8 +502,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL AS PARTY_MEMBER_TRAINING_ID,
-                       (SELECT p.PARTY_MEMBER_ID
+                SELECT (SELECT p.PARTY_MEMBER_ID
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                         WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
                           AND ROWNUM = 1) AS PARTY_MEMBER_ID,
@@ -568,7 +561,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         NOTE,
                         TRAINING_LEVEL_ID,
                         TRAINING_TYPE_ID)
-                VALUES (s.PARTY_MEMBER_TRAINING_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                         s.PARTY_MEMBER_ID,
                         s.IS_ACTIVE,
                         s.V3_QUATRINH_DAOTAO_GUID,
@@ -586,8 +579,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL AS PARTY_MEMBER_TRAINING_ID,
-                       (SELECT p.PARTY_MEMBER_ID
+                SELECT (SELECT p.PARTY_MEMBER_ID
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                         WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
                           AND ROWNUM = 1) AS PARTY_MEMBER_ID,
@@ -646,7 +638,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         NOTE,
                         TRAINING_LEVEL_ID,
                         TRAINING_TYPE_ID)
-                VALUES (s.PARTY_MEMBER_TRAINING_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                         s.PARTY_MEMBER_ID,
                         s.IS_ACTIVE,
                         s.V3_QUATRINH_DAOTAO_GUID,
@@ -664,8 +656,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
     @Query(value = """
             MERGE INTO CSDLDV_PARTY_MEMBER.PARTY_MEMBER_TRAINING_PROCESS t
             USING (
-                SELECT CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL AS PARTY_MEMBER_TRAINING_ID,
-                       (SELECT p.PARTY_MEMBER_ID
+                SELECT (SELECT p.PARTY_MEMBER_ID
                         FROM CSDLDV_PARTY_MEMBER.PARTY_MEMBER p
                         WHERE p.V3_SOYEU_ID = dt.SOYEU_ID
                           AND ROWNUM = 1) AS PARTY_MEMBER_ID,
@@ -724,7 +715,7 @@ public interface PartyMemberTrainingProcessRepository extends JpaRepository<Part
                         NOTE,
                         TRAINING_LEVEL_ID,
                         TRAINING_TYPE_ID)
-                VALUES (s.PARTY_MEMBER_TRAINING_ID,
+                VALUES (CSDLDV.PARTY_MEMBER_TRAINING_PROCESS_SEQ.NEXTVAL,
                         s.PARTY_MEMBER_ID,
                         s.IS_ACTIVE,
                         s.V3_QUATRINH_DAOTAO_GUID,
