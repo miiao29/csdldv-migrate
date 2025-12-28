@@ -584,9 +584,9 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         System.out.println("2: PARTY_MEMBER_DISCIPLINE Migration (batch size " + disciplineBatchSize + ")\n");
 
         System.out.println("3: PARTY_MEMBER_TRAINING_PROCESS Migration (Delete invalid or duplicate records) (batch size " + trainingProcess32BatchSize + ")");
-        System.out.println("4: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_LLCT) (batch size " + trainingProcess31BatchSize + ")");
-        System.out.println("5: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_BANGDT) (batch size " + trainingProcess33BatchSize + ")");
-        System.out.println("6: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_BANGNN) (batch size " + trainingProcess34BatchSize + ")\n");
+        System.out.println("4: PARTY_MEMBER_TRAINING_PROCESS Migration (Merge MA_LLCT) (batch size " + trainingProcess31BatchSize + ")");
+        System.out.println("5: PARTY_MEMBER_TRAINING_PROCESS Migration (Merge MA_BANGDT) (batch size " + trainingProcess33BatchSize + ")");
+        System.out.println("6: PARTY_MEMBER_TRAINING_PROCESS Migration (Merge MA_BANGNN) (batch size " + trainingProcess34BatchSize + ")\n");
 
         System.out.println("7: FINANCIAL_CONDITION Migration (batch size " + financialConditionBatchSize + ")\n");
 
