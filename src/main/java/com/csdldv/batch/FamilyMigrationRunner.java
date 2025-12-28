@@ -16,6 +16,7 @@ public class FamilyMigrationRunner implements CommandLineRunner {
     private final FamilyMigrationService familyMigrationService;
     private final DisciplineMigrationService disciplineMigrationService;
     private final TrainingProcessMigrationService trainingProcessMigrationService;
+    private final FinancialConditionMigrationService financialConditionMigrationService;
     private final int familyBatchSize;
     private final int familyMegaBatchSize;
     private final int disciplineBatchSize;
@@ -28,11 +29,14 @@ public class FamilyMigrationRunner implements CommandLineRunner {
     private final int trainingProcess33MegaBatchSize;
     private final int trainingProcess34BatchSize;
     private final int trainingProcess34MegaBatchSize;
+    private final int financialConditionBatchSize;
+    private final int financialConditionMegaBatchSize;
 
-    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, DisciplineMigrationService disciplineMigrationService, TrainingProcessMigrationService trainingProcessMigrationService, @Value("${migration.family.batch-size:1000}") int familyBatchSize, @Value("${migration.family.mega-batch-size:100000}") int familyMegaBatchSize, @Value("${migration.discipline.batch-size:1000}") int disciplineBatchSize, @Value("${migration.discipline.mega-batch-size:100000}") int disciplineMegaBatchSize, @Value("${migration.training-process-31.batch-size:1000}") int trainingProcess31BatchSize, @Value("${migration.training-process-31.mega-batch-size:100000}") int trainingProcess31MegaBatchSize, @Value("${migration.training-process-32.batch-size:1000}") int trainingProcess32BatchSize, @Value("${migration.training-process-32.mega-batch-size:100000}") int trainingProcess32MegaBatchSize, @Value("${migration.training-process-33.batch-size:1000}") int trainingProcess33BatchSize, @Value("${migration.training-process-33.mega-batch-size:100000}") int trainingProcess33MegaBatchSize, @Value("${migration.training-process-34.batch-size:1000}") int trainingProcess34BatchSize, @Value("${migration.training-process-34.mega-batch-size:100000}") int trainingProcess34MegaBatchSize) {
+    public FamilyMigrationRunner(FamilyMigrationService familyMigrationService, DisciplineMigrationService disciplineMigrationService, TrainingProcessMigrationService trainingProcessMigrationService, FinancialConditionMigrationService financialConditionMigrationService, @Value("${migration.family.batch-size:1000}") int familyBatchSize, @Value("${migration.family.mega-batch-size:100000}") int familyMegaBatchSize, @Value("${migration.discipline.batch-size:1000}") int disciplineBatchSize, @Value("${migration.discipline.mega-batch-size:100000}") int disciplineMegaBatchSize, @Value("${migration.training-process-31.batch-size:1000}") int trainingProcess31BatchSize, @Value("${migration.training-process-31.mega-batch-size:100000}") int trainingProcess31MegaBatchSize, @Value("${migration.training-process-32.batch-size:1000}") int trainingProcess32BatchSize, @Value("${migration.training-process-32.mega-batch-size:100000}") int trainingProcess32MegaBatchSize, @Value("${migration.training-process-33.batch-size:1000}") int trainingProcess33BatchSize, @Value("${migration.training-process-33.mega-batch-size:100000}") int trainingProcess33MegaBatchSize, @Value("${migration.training-process-34.batch-size:1000}") int trainingProcess34BatchSize, @Value("${migration.training-process-34.mega-batch-size:100000}") int trainingProcess34MegaBatchSize, @Value("${migration.financial-condition.batch-size:1000}") int financialConditionBatchSize, @Value("${migration.financial-condition.mega-batch-size:100000}") int financialConditionMegaBatchSize) {
         this.familyMigrationService = familyMigrationService;
         this.disciplineMigrationService = disciplineMigrationService;
         this.trainingProcessMigrationService = trainingProcessMigrationService;
+        this.financialConditionMigrationService = financialConditionMigrationService;
         this.familyBatchSize = familyBatchSize;
         this.familyMegaBatchSize = familyMegaBatchSize;
         this.disciplineBatchSize = disciplineBatchSize;
@@ -45,6 +49,8 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         this.trainingProcess33MegaBatchSize = trainingProcess33MegaBatchSize;
         this.trainingProcess34BatchSize = trainingProcess34BatchSize;
         this.trainingProcess34MegaBatchSize = trainingProcess34MegaBatchSize;
+        this.financialConditionBatchSize = financialConditionBatchSize;
+        this.financialConditionMegaBatchSize = financialConditionMegaBatchSize;
     }
 
     @Override
@@ -73,9 +79,11 @@ public class FamilyMigrationRunner implements CommandLineRunner {
                 handleTrainingProcessMigration33();
             } else if ("6".equals(key)) {
                 handleTrainingProcessMigration34();
+            } else if ("7".equals(key)) {
+                handleFinancialConditionMigration();
             } else {
                 log.warn("Invalid migration key {}, please enter again", key);
-                System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, 2 for PARTY_MEMBER_DISCIPLINE migration, 3 for PARTY_MEMBER_TRAINING_PROCESS migration (Delete invalid or duplicate records), 4 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_LLCT), 5 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_BANGDT), or 6 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_BANGNN).");
+                System.out.println("Invalid option. Please enter 0 to exit, 1 for Family migration, 2 for PARTY_MEMBER_DISCIPLINE migration, 3 for PARTY_MEMBER_TRAINING_PROCESS migration (Delete invalid or duplicate records), 4 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_LLCT), 5 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_BANGDT), 6 for PARTY_MEMBER_TRAINING_PROCESS migration (Insert MA_BANGNN), or 7 for FINANCIAL_CONDITION migration.");
             }
         }
     }
@@ -278,6 +286,39 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         }
     }
 
+    private void handleFinancialConditionMigration() {
+        while (true) {
+            displaySubMenu("FINANCIAL_CONDITION Migration");
+
+            String subKey = readKey();
+
+            log.info("Received sub-menu key {} for FINANCIAL_CONDITION migration", subKey);
+
+            if ("0".equals(subKey)) {
+                log.info("Returning to main menu");
+                break;
+            } else if ("1".equals(subKey)) {
+                log.info("Displaying SQL for FINANCIAL_CONDITION migration");
+                financialConditionMigrationService.displaySql();
+            } else if ("2".equals(subKey)) {
+                log.info("Starting FINANCIAL_CONDITION migration with batch size {}, mega-batch size {}", financialConditionBatchSize, financialConditionMegaBatchSize);
+
+                try {
+                    financialConditionMigrationService.mergeFinancialCondition(financialConditionBatchSize, financialConditionMegaBatchSize);
+                    log.info("FINANCIAL_CONDITION migration completed successfully");
+                    log.info("Returning to main menu");
+                    break;
+                } catch (Exception ex) {
+                    log.error("FINANCIAL_CONDITION migration failed: {}", ex.getMessage(), ex);
+                    System.exit(1);
+                }
+            } else {
+                log.warn("Invalid sub-menu key {}, please enter again", subKey);
+                System.out.println("Invalid option. Please enter 0 to return, 1 to view SQL, or 2 to execute migration.");
+            }
+        }
+    }
+
     @SuppressWarnings("resource")
     private String readKey() {
         Console console = System.console();
@@ -306,6 +347,7 @@ public class FamilyMigrationRunner implements CommandLineRunner {
         System.out.println("4: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_LLCT) (batch size " + trainingProcess31BatchSize + ")");
         System.out.println("5: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_BANGDT) (batch size " + trainingProcess33BatchSize + ")");
         System.out.println("6: PARTY_MEMBER_TRAINING_PROCESS Migration (Insert MA_BANGNN) (batch size " + trainingProcess34BatchSize + ")\n");
+        System.out.println("7: FINANCIAL_CONDITION Migration (batch size " + financialConditionBatchSize + ")\n");
         System.out.print("Enter option: ");
     }
 
